@@ -31,8 +31,16 @@ class App extends Component {
     }
 
     createLadder( investedAmount ){
-        let url = '/api/munis/filter';
-        console.log('....investedAmount', investedAmount)
+        let url = 'http://localhost:8080/buckets';
+//        console.log('.............this.state', this.state)
+
+        let filter = Object.assign( {}, this.state.maturityRange, { investedAmount });
+        console.log('....filter', filter);
+
+        axios.get(url, { params: filter })
+            .then( response => response.data )
+            .then( munis => console.log("from axios......", munis))
+
     }
 
     render() {
