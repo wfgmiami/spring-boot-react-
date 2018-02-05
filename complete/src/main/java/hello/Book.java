@@ -18,10 +18,11 @@ public class Book {
         private String md;
         private String ytw;
 
-        public Book(String isbn, String title) {
-            this.isbn = isbn;
-            this.title = title;
+        public Book(String cusip, String sector) {
+            this.cusip = cusip;
+            this.sector = sector;
         }
+        public Book(){}
 
         public String getState(){
             return state;

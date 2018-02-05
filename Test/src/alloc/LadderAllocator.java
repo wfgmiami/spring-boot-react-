@@ -283,7 +283,7 @@ public class LadderAllocator {
         try{
             //for debug output
             //buffWriter = new BufferedWriter (new FileWriter("L:\\Savinder\\Java\\LadderAllocationOutput.txt"));
-            buffWriter = new BufferedWriter (new FileWriter("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\LadderAllocationOutput.txt"));
+            buffWriter = new BufferedWriter (new FileWriter("C:\\Users\\Aleks\\eclipse-workspace\\spring-boot-react-\\Test\\LadderAllocationOutput.txt"));
             //get the default date
             defPurchaseDate = DATE_FORMAT.parse("01/01/2001");
 
@@ -329,7 +329,7 @@ public class LadderAllocator {
         Map<String, Security> cusipSecMap = new HashMap<String, LadderAllocator.Security>();
         BufferedReader buffReader = null;
         try{
-            buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\Security_SMF_20180124.csv"));
+            buffReader = new BufferedReader (new FileReader("C:\\Users\\Aleks\\eclipse-workspace\\spring-boot-react-\\Test\\Security_SMF_20180124.csv"));
             String line = buffReader.readLine();
             int cusipCtr = -1;
             int sectorCtr = -1;
@@ -405,7 +405,7 @@ public class LadderAllocator {
             }
         }
         try{
-            buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\SMASecurity_20180124.csv"));
+            buffReader = new BufferedReader (new FileReader("C:\\Users\\Aleks\\eclipse-workspace\\spring-boot-react-\\Test\\SMASecurity_20180124.csv"));
             DateFormat df = new SimpleDateFormat("dd-MMM-yy");
             String line = buffReader.readLine();
             int cusipCtr = -1;
