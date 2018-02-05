@@ -2,15 +2,13 @@ package com.lordabbett.muniladder.service;
 
 import com.lordabbett.muniladder.model.FileLoader;
 import com.lordabbett.muniladder.model.Security;
+
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -33,10 +31,10 @@ public class Allocation {
     public static final double MAX_SECTOR_STATE_PCT = 10;
 
     List<Security> bonds = new FileLoader().getSecList();
-    private Long min;
-    private Long max;
+    private int min;
+    private int max;
 
-    private ArrayList<Long> buckets = new ArrayList<Long>();
+    private ArrayList<Integer> buckets = new ArrayList<Integer>();
 
     @PostConstruct
     public void init() throws IOException{
@@ -46,16 +44,56 @@ public class Allocation {
 
     public Collection<Security> buckets(HashMap<String,String> queryMap){
 
-        max = Long.parseLong(queryMap.get("max"));
-        min = Long.parseLong(queryMap.get("min"));
-        for(long i = min; i <= max; i++){
+    	SortedMap<Integer, Map<String,List<Security>>> bucketSecMap = new TreeMap<Integer, Map<String,List<Security>>>();
+    	
+        max = Integer.valueOf(queryMap.get("max"));
+        min = Integer.parseInt(queryMap.get("min"));
+        for(int i = min; i <= max; i++){
             buckets.add(i);
         }
 
-        return this.bonds.stream()
-        .filter(this::filterBonds)
-        .collect(Collectors.toList());
+        List<Security> filteredBonds = this.bonds.stream()
+            .filter(this::filterBonds)
+            .collect(Collectors.toList());
+        
+        Map<String, List<Security>> bondsByRanking = new HashMap<String, List<Security>>();
+        
+        for(int bucket:buckets){
+        	List<Security> bucketSecurity = filteredBonds.stream()
+        			.filter( bond -> bond.getYearsToMaturity() == bucket)
+        			.collect(Collectors.toList());
+        	List<Security> healthCareBonds = bucketSecurity.stream()
+        			.filter( bond -> bond.getSector().equals(SECTOR_HEALTHCARE))
+        			.collect(Collectors.toList());
+        	List<Security> nyBonds =  bucketSecurity.stream()
+        			.filter( bond -> bond.getSector().equals(STATE_NY))
+        			.collect(Collectors.toList());
+        	bondsByRanking.put("HealthCare", healthCareBonds);
+        	bondsByRanking.put("nyBonds", nyBonds);
+        	
+        	bucketSecMap.put(bucket,bondsByRanking);
+        }
+        //Collections.sort(filteredBonds);
+        
+//
+//        for(Security sec: filteredBonds){
+//            List<Security> secList = bucketSecMap.get(sec.getYearsToMaturity());
+//            if(secList == null){
+//                secList = new ArrayList<Security>();
+//                bucketSecMap.put(sec.getYearsToMaturity(), secList);
+//            }
+//            secList.add(sec);
+//        }
+//        for(Map.Entry<Integer,List<Security>> entry: bucketSecMap.entrySet()){
+//        	System.out.println(".................");
+//        	System.out.println(Integer.toString(entry.getKey()));
+//        	for(Security sec:entry.getValue()){
+//        	}
+//        }
+        return filteredBonds;
     }
+
+
 
     private boolean filterBonds(Security sec){
         int yearsToMat = sec.getYearsToMaturity();
@@ -65,5 +103,10 @@ public class Allocation {
             return yearsToMat<= max && yearsToMat >= min && price >= 100 && price <= 105;
         }
         return yearsToMat <= max && yearsToMat >= min;
+    }
+    
+    private abstract class ConstraintEvaluator implements Observer{
+    
+    	
     }
 }

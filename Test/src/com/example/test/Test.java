@@ -11,19 +11,9 @@ public class Test {
 
 
     public static void main(String[] args){
-//        Test t = new Test();
-//        t.test();
-
-        DateFormat df = new SimpleDateFormat("mm-dd-yy");
-        try{
-            Date dt = df.parse("01-05-2018");
-            df = new SimpleDateFormat("yy");
-            int i = Integer.valueOf(df.format(dt));
-            System.out.println(Integer.toString(i));
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
-
+        System.out.println(SecPriority.A_OR_BELOW_CA);
+        int t = SecPriority.valueOf("A_OR_BELOW_CA").ordinal();
+        System.out.println(Integer.toString(t));
     }
 
     public void test(){
@@ -43,6 +33,23 @@ public class Test {
         for(String s:alst){
             System.out.print(s);
         }
+    }
+
+
+    private enum SecPriority     {
+        ABOVE_A_HEALTHCARE_NY,
+        ABOVE_A_HEALTHCARE_CA,
+        ABOVE_A_HEALTHCARE_NON_NY_CA,
+        ABOVE_A_NY,
+        ABOVE_A_CA,
+        ABOVE_A_NON_NY_CA,
+        A_OR_BELOW_HEALTHCARE_NY,
+        A_OR_BELOW_HEALTHCARE_CA,
+        A_OR_BELOW_HEALTHCARE_NON_NY_CA,
+        A_OR_BELOW_NY,
+        A_OR_BELOW_CA,
+        A_OR_BELOW_NON_NY_CA,
+        NO_PRIORITY;
     }
 
 

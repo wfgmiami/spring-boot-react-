@@ -15,12 +15,11 @@
       <file leaf-file-name="LadderAllocator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/alloc/LadderAllocator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="496">
-              <caret line="465" column="0" lean-forward="false" selection-start-line="465" selection-start-column="0" selection-end-line="465" selection-end-column="0" />
+            <state relative-caret-position="782">
+              <caret line="301" column="57" lean-forward="true" selection-start-line="301" selection-start-column="57" selection-end-line="301" selection-end-column="57" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#1378#1391#0" expanded="true" />
                 <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -30,55 +29,50 @@
                 <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#11297#11323#0" expanded="true" />
                 <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#13746#13772#0" expanded="true" />
-                <element signature="e#13831#13865#0" expanded="true" />
                 <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+                <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#25779#25780#0" expanded="true" />
-                <element signature="e#25843#25844#0" expanded="true" />
+                <element signature="e#26106#26107#0" expanded="true" />
+                <element signature="e#26170#26171#0" expanded="true" />
                 <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#26980#26981#0" expanded="true" />
-                <element signature="e#27023#27024#0" expanded="true" />
+                <element signature="e#27307#27308#0" expanded="true" />
+                <element signature="e#27350#27351#0" expanded="true" />
                 <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#28541#28542#0" expanded="true" />
-                <element signature="e#28584#28585#0" expanded="true" />
+                <element signature="e#28868#28869#0" expanded="true" />
+                <element signature="e#28911#28912#0" expanded="true" />
                 <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#29880#29881#0" expanded="true" />
-                <element signature="e#29923#29924#0" expanded="true" />
+                <element signature="e#30207#30208#0" expanded="true" />
+                <element signature="e#30250#30251#0" expanded="true" />
                 <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#31161#31162#0" expanded="true" />
-                <element signature="e#31204#31205#0" expanded="true" />
+                <element signature="e#31488#31489#0" expanded="true" />
+                <element signature="e#31531#31532#0" expanded="true" />
                 <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#32174#32175#0" expanded="true" />
-                <element signature="e#32217#32218#0" expanded="true" />
+                <element signature="e#32501#32502#0" expanded="true" />
+                <element signature="e#32544#32545#0" expanded="true" />
                 <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#33250#33251#0" expanded="true" />
-                <element signature="e#33306#33307#0" expanded="true" />
+                <element signature="e#33577#33578#0" expanded="true" />
+                <element signature="e#33633#33634#0" expanded="true" />
                 <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#37443#37452#0" expanded="true" />
-                <element signature="e#37511#37517#0" expanded="true" />
                 <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
                 <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-                <element signature="e#39645#39646#0" expanded="true" />
-                <element signature="e#39679#39680#0" expanded="true" />
+                <element signature="e#39972#39973#0" expanded="true" />
+                <element signature="e#40006#40007#0" expanded="true" />
                 <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
               </folding>
             </state>
@@ -88,8 +82,8 @@
       <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/example/test/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="19" column="44" lean-forward="false" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+            <state relative-caret-position="51">
+              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -126,7 +120,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>debug</find>
-      <find>aleks</find>
       <find>tfiappsq1</find>
       <find>LadderAllocator</find>
       <find>NEW_LINE</find>
@@ -143,11 +136,12 @@
       <find>print</find>
       <find>loadSecurityData</find>
       <find>NO_PRIOR</find>
-      <find>secPriorityList</find>
       <find>SecPriority</find>
       <find>SECTOR_HEALTHCARE</find>
       <find>df</find>
       <find>defPurchaseDate</find>
+      <find>aleks</find>
+      <find>secPriorityList</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -166,10 +160,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
+    <option name="x" value="1672" />
     <option name="y" value="-8" />
     <option name="width" value="1696" />
-    <option name="height" value="1026" />
+    <option name="height" value="1066" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -186,9 +180,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -207,11 +198,20 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="alloc" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Test" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Test" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView" />
       <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -219,7 +219,7 @@
     <property name="project.structure.proportion" value="0.10546875" />
     <property name="project.structure.side.proportion" value="0.5829694" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../server" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -238,7 +238,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.LadderAllocator">
+  <component name="RunManager" selected="Application.Test">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -364,8 +364,8 @@
     </list>
     <recent_temporary>
       <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Application.LadderAllocator" />
-        <item index="1" class="java.lang.String" itemvalue="Application.Test" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Test" />
+        <item index="1" class="java.lang.String" itemvalue="Application.LadderAllocator" />
       </list>
     </recent_temporary>
   </component>
@@ -386,27 +386,27 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="1672" y="-8" width="1696" height="1066" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4217119" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36017898" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36012527" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15059523" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3232662" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33402923" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -430,24 +430,24 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/alloc/LadderAllocator.java</url>
-          <line>68</line>
-          <properties />
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/alloc/LadderAllocator.java</url>
           <line>72</line>
           <properties />
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/alloc/LadderAllocator.java</url>
-          <line>464</line>
+          <line>73</line>
           <properties />
-          <option name="timeStamp" value="40" />
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/example/test/Test.java</url>
+          <line>14</line>
+          <properties />
+          <option name="timeStamp" value="44" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="41" />
+      <option name="time" value="45" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -464,7 +464,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -474,55 +473,222 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
+            <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/alloc/Rating.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3978">
+          <caret line="234" column="27" lean-forward="false" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="27" />
+          <folding>
+            <element signature="e#4548#4549#0" expanded="true" />
+            <element signature="e#4584#4585#0" expanded="true" />
+            <element signature="e#4735#4736#0" expanded="true" />
+            <element signature="e#4768#4769#0" expanded="true" />
+            <element signature="e#4911#4912#0" expanded="true" />
+            <element signature="e#4947#4948#0" expanded="true" />
+            <element signature="e#5072#5073#0" expanded="true" />
+            <element signature="e#5103#5104#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/alloc/LadderAllocator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#evaluateConstraints#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#evaluateConstraints#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
+            <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
+            <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
+            <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
+            <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
+            <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
+            <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
+            <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
+            <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/test/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="19" column="44" lean-forward="false" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/alloc/Rating.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3978">
+          <caret line="234" column="27" lean-forward="false" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="27" />
+          <folding>
+            <element signature="e#4548#4549#0" expanded="true" />
+            <element signature="e#4584#4585#0" expanded="true" />
+            <element signature="e#4735#4736#0" expanded="true" />
+            <element signature="e#4768#4769#0" expanded="true" />
+            <element signature="e#4911#4912#0" expanded="true" />
+            <element signature="e#4947#4948#0" expanded="true" />
+            <element signature="e#5072#5073#0" expanded="true" />
+            <element signature="e#5103#5104#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/alloc/LadderAllocator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#evaluateConstraints#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#evaluateConstraints#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
+            <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
+            <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
+            <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
+            <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
+            <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
+            <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
+            <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -560,7 +726,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -570,55 +735,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -648,7 +808,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -658,55 +817,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -736,7 +890,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -746,55 +899,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -848,7 +996,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -858,55 +1005,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -943,7 +1085,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -953,55 +1094,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>
@@ -1045,25 +1181,25 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/test/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="19" column="44" lean-forward="false" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+        <state relative-caret-position="51">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/alloc/LadderAllocator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="496">
-          <caret line="465" column="0" lean-forward="false" selection-start-line="465" selection-start-column="0" selection-end-line="465" selection-end-column="0" />
+        <state relative-caret-position="782">
+          <caret line="301" column="57" lean-forward="true" selection-start-line="301" selection-start-column="57" selection-end-line="301" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#1378#1391#0" expanded="true" />
             <element signature="docComment;method#allocate#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getNumBondsPerBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#createConstraintEvaluatorsList#0;class#LadderAllocator#0" expanded="false" />
@@ -1073,55 +1209,50 @@
             <element signature="docComment;method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#doRecursiveLadderAllocation#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#getFilteredList#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#11297#11323#0" expanded="true" />
             <element signature="docComment;method#init#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="method#end#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;method#loadSecurityData#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#13746#13772#0" expanded="true" />
-            <element signature="e#13831#13865#0" expanded="true" />
             <element signature="docComment;method#print#0;class#LadderAllocator#0" expanded="false" />
+            <element signature="method#print#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#Security#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="class#Security#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecurityParAmt#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#25779#25780#0" expanded="true" />
-            <element signature="e#25843#25844#0" expanded="true" />
+            <element signature="e#26106#26107#0" expanded="true" />
+            <element signature="e#26170#26171#0" expanded="true" />
             <element signature="docComment;class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateSectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#26980#26981#0" expanded="true" />
-            <element signature="e#27023#27024#0" expanded="true" />
+            <element signature="e#27307#27308#0" expanded="true" />
+            <element signature="e#27350#27351#0" expanded="true" />
             <element signature="docComment;class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SectorConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#28541#28542#0" expanded="true" />
-            <element signature="e#28584#28585#0" expanded="true" />
+            <element signature="e#28868#28869#0" expanded="true" />
+            <element signature="e#28911#28912#0" expanded="true" />
             <element signature="docComment;class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#StateConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#29880#29881#0" expanded="true" />
-            <element signature="e#29923#29924#0" expanded="true" />
+            <element signature="e#30207#30208#0" expanded="true" />
+            <element signature="e#30250#30251#0" expanded="true" />
             <element signature="docComment;class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#AOrBelowConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#31161#31162#0" expanded="true" />
-            <element signature="e#31204#31205#0" expanded="true" />
+            <element signature="e#31488#31489#0" expanded="true" />
+            <element signature="e#31531#31532#0" expanded="true" />
             <element signature="docComment;class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#HealthCareConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#32174#32175#0" expanded="true" />
-            <element signature="e#32217#32218#0" expanded="true" />
+            <element signature="e#32501#32502#0" expanded="true" />
+            <element signature="e#32544#32545#0" expanded="true" />
             <element signature="class#ConstraintEvaluator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#33250#33251#0" expanded="true" />
-            <element signature="e#33306#33307#0" expanded="true" />
+            <element signature="e#33577#33578#0" expanded="true" />
+            <element signature="e#33633#33634#0" expanded="true" />
             <element signature="docComment;class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#LadderBucket#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#LadderConfig#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#37443#37452#0" expanded="true" />
-            <element signature="e#37511#37517#0" expanded="true" />
             <element signature="docComment;class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#SecRating#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#SecPriority#0;class#LadderAllocator#0" expanded="false" />
             <element signature="docComment;class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
             <element signature="class#MatYrComparator#0;class#LadderAllocator#0" expanded="false" />
-            <element signature="e#39645#39646#0" expanded="true" />
-            <element signature="e#39679#39680#0" expanded="true" />
+            <element signature="e#39972#39973#0" expanded="true" />
+            <element signature="e#40006#40007#0" expanded="true" />
             <element signature="docComment;method#main#0;class#LadderAllocator#0" expanded="false" />
           </folding>
         </state>

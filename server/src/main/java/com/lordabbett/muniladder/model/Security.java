@@ -7,7 +7,7 @@ import lombok.ToString;
 import java.util.Date;
 
 @Data
-public class Security{
+public class Security implements Comparable{
 //13 fields
     private String cusip;
     private double price;
@@ -69,6 +69,19 @@ public class Security{
         }
     }
 
+    public int compareTo(Object o){
+
+        int secSortOrder = getPriority().ordinal();
+        int sortOrder = ((Security)o).getPriority().ordinal();
+        if(secSortOrder > sortOrder){
+            return 1;
+        }else if(secSortOrder < sortOrder){
+            return -1;
+        }else{
+            return ((Security)o).lastTraded.compareTo(lastTraded);
+        }
+
+    }
 
     private enum SecPriority     {
         ABOVE_A_HEALTHCARE_NY,
