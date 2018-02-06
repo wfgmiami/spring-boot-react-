@@ -145,10 +145,10 @@ public class FileLoader {
                         try{
                             dt = df.parse(lineArray[lastTradedPos].trim());
                             if (dt == null) {
-                                //sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
+//                                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
                                 sec.setLastTraded(defaultLastTraded);
                             } else {
-                                //sec.setLastTraded(DATE_FORMAT.format(dt));
+//                                sec.setLastTraded(DATE_FORMAT.format(dt));
                                 sec.setLastTraded(dt);
                             }
                         }catch(ParseException e){

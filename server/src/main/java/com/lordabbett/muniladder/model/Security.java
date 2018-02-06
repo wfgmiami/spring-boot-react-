@@ -4,10 +4,12 @@ import com.lordabbett.muniladder.service.Allocation;
 import lombok.Data;
 import lombok.ToString;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
-@ToString(exclude="lastTraded")
 public class Security implements Comparable{
 //13 fields
     private String cusip;
@@ -19,11 +21,13 @@ public class Security implements Comparable{
     private String rating;
     private FileLoader.SecRating twoGroupsRating;
     private String state;
+    private String latestTraded;
     private Date lastTraded;
     private double effDur;
     private double modDur;
     private double yieldToWorst;
-
+  
+    
     public Security(){}
 
     public SecPriority getPriority(){
@@ -69,31 +73,13 @@ public class Security implements Comparable{
             return SecPriority.NO_PRIORITY;
         }
     }
-    
-//    public String toString(){
-//        return "lastTraded: " + FileLoader.DATE_FORMAT.format(lastTraded);
+ 
+//    public String getLastTraded(){
+//    	return FileLoader.DATE_FORMAT.format(lastTraded);
 //    }
-    
+
     public int compareTo(Object o){
-
-        int secSortOrder = getPriority().ordinal();
-        int sortOrder = ((Security)o).getPriority().ordinal();
-        
-        if(secSortOrder > sortOrder){
-            return 1;
-        }else if(secSortOrder < sortOrder){
-            return -1;
-        }else{
-            return ((Security)o).lastTraded.compareTo(lastTraded);
-        }
-//    	if(this.lastTraded < s.getLastTraded()) {
-//    		return -1;
-//    	}
-//    	if(this.lastTraded == s.getLastTraded()) {
-//    		return 0;
-//    	}
-//    	return 1;
-
+    	return ((Security)o).lastTraded.compareTo(lastTraded);
     }
 
     private enum SecPriority     {

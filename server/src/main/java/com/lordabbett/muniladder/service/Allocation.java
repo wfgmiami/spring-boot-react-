@@ -34,8 +34,6 @@ public class Allocation {
     private int min;
     private int max;
 
-    private ArrayList<Integer> buckets = new ArrayList<Integer>();
-
     @PostConstruct
     public void init() throws IOException{
         FileLoader fileLoader = new FileLoader();
@@ -43,21 +41,25 @@ public class Allocation {
     }
 
     public Collection<Security> buckets(HashMap<String,String> queryMap){
-
-    	SortedMap<Integer, Map<String,List<Security>>> bucketSecMap = new TreeMap<Integer, Map<String,List<Security>>>();
     	
+    	ArrayList<Integer> buckets = new ArrayList<Integer>();
+    	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
+    	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
+        ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
+        
         max = Integer.valueOf(queryMap.get("max"));
         min = Integer.parseInt(queryMap.get("min"));
         for(int i = min; i <= max; i++){
             buckets.add(i);
         }
-
+        System.out.println(Integer.toString(buckets.size()));
         List<Security> filteredBonds = this.bonds.stream()
             .filter(this::filterBonds)
             .collect(Collectors.toList());
         
-        Map<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
+        Collections.sort(filteredBonds);
         
+  
         for(int bucket:buckets){
         	List<Security> bucketSecurity = filteredBonds.stream()
         			.filter( bond -> bond.getYearsToMaturity() == bucket)
@@ -77,19 +79,43 @@ public class Allocation {
         	List<Security> aaRatedBonds =  bucketSecurity.stream()
         			.filter( bond -> bond.getTwoGroupsRating().equals(FileLoader.SecRating.ABOVE_A))
         			.collect(Collectors.toList());
+        	List<Security> couponRated = bucketSecurity;
+        	Collections.sort(couponRated, new Comparator<Security>(){
+        		@Override
+        		public int compare(Security s1, Security s2){
+        			return Double.compare( s2.getCoupon(),s1.getCoupon());
+        		
+        		}
+        	});
         	
         	groupedByRanking.put("HealthCare", healthCareBonds);
         	groupedByRanking.put("nyBonds", nyBonds);
         	groupedByRanking.put("caBonds",caBonds);
         	groupedByRanking.put("aRatedBonds", nyBonds);
         	groupedByRanking.put("aaRatedBonds",caBonds);
+        	groupedByRanking.put("couponRated", couponRated);
         	
-        	bucketSecMap.put(bucket,groupedByRanking);
+        	for(Map.Entry<String,List<Security>> entry:groupedByRanking.entrySet()){
+        		System.out.print(entry.getKey());
+        		for(Security sec: entry.getValue()){
+        			System.out.println(sec.toString());
+        		}
+        	}
+        	
+        	groupedByBucket.put(bucket,groupedByRanking);
+        	bucketsByRanking.add(groupedByBucket);
         }
         
-        //Collections.sort(filteredBonds);
-        
-//
+       
+        for(TreeMap<Integer, HashMap<String, List<Security>>> entry: bucketsByRanking){
+        	for(Integer key : entry.keySet()){
+        		HashMap hm = entry.get(key);
+        		System.out.println("key= " + key);
+        		System.out.println("value= " + hm);
+        	}	
+        }
+       
+
 //        for(Security sec: filteredBonds){
 //            List<Security> secList = bucketSecMap.get(sec.getYearsToMaturity());
 //            if(secList == null){
@@ -112,8 +138,9 @@ public class Allocation {
     private boolean filterBonds(Security sec){
         int yearsToMat = sec.getYearsToMaturity();
         double price = sec.getPrice();
-
-        if(buckets.get(0).equals(1)){
+        String lastTraded = (FileLoader.DATE_FORMAT.format(sec.getLastTraded()));
+        sec.setLatestTraded(lastTraded);
+        if(min == 1){
             return yearsToMat<= max && yearsToMat >= min && price >= MIN_PRICE && price <= MAX_PRICE_ONE;
         }
         return yearsToMat <= max && yearsToMat >= min && price <= MAX_PRICE_OTHER;
