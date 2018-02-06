@@ -18,7 +18,7 @@ public class FileLoader {
     private static final String SMA_FILE_PATH = "./SMASecurity_20180124.csv";
     private static List<Security> secList  = new ArrayList <Security> ();
     Map<String, Security> cusipSecMap = new HashMap<String, Security>();
-    private static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+    public static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
     private static DateFormat df = new SimpleDateFormat("yyyy");
     private static Date defaultLastTraded = null;
     private Date dt = null;
@@ -145,9 +145,11 @@ public class FileLoader {
                         try{
                             dt = df.parse(lineArray[lastTradedPos].trim());
                             if (dt == null) {
-                                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
+                                //sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
+                                sec.setLastTraded(defaultLastTraded);
                             } else {
-                                sec.setLastTraded(DATE_FORMAT.format(dt));
+                                //sec.setLastTraded(DATE_FORMAT.format(dt));
+                                sec.setLastTraded(dt);
                             }
                         }catch(ParseException e){
                             e.printStackTrace();
@@ -162,7 +164,8 @@ public class FileLoader {
         for(Security sec: secList){
             if(sec.getLastTraded() == null){
                 sec.setState(defaultState);
-                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
+//                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
+                sec.setLastTraded(defaultLastTraded);
             }
         }
     }

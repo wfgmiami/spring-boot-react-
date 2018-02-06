@@ -56,7 +56,7 @@ public class Allocation {
             .filter(this::filterBonds)
             .collect(Collectors.toList());
         
-        Map<String, List<Security>> bondsByRanking = new HashMap<String, List<Security>>();
+        Map<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
         
         for(int bucket:buckets){
         	List<Security> bucketSecurity = filteredBonds.stream()
@@ -66,13 +66,27 @@ public class Allocation {
         			.filter( bond -> bond.getSector().equals(SECTOR_HEALTHCARE))
         			.collect(Collectors.toList());
         	List<Security> nyBonds =  bucketSecurity.stream()
-        			.filter( bond -> bond.getSector().equals(STATE_NY))
+        			.filter( bond -> bond.getState().equals(STATE_NY))
         			.collect(Collectors.toList());
-        	bondsByRanking.put("HealthCare", healthCareBonds);
-        	bondsByRanking.put("nyBonds", nyBonds);
+        	List<Security> caBonds =  bucketSecurity.stream()
+        			.filter( bond -> bond.getState().equals(STATE_CA))
+        			.collect(Collectors.toList());
+        	List<Security> aRatedBonds =  bucketSecurity.stream()
+        			.filter( bond -> bond.getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW))
+        			.collect(Collectors.toList());
+        	List<Security> aaRatedBonds =  bucketSecurity.stream()
+        			.filter( bond -> bond.getTwoGroupsRating().equals(FileLoader.SecRating.ABOVE_A))
+        			.collect(Collectors.toList());
         	
-        	bucketSecMap.put(bucket,bondsByRanking);
+        	groupedByRanking.put("HealthCare", healthCareBonds);
+        	groupedByRanking.put("nyBonds", nyBonds);
+        	groupedByRanking.put("caBonds",caBonds);
+        	groupedByRanking.put("aRatedBonds", nyBonds);
+        	groupedByRanking.put("aaRatedBonds",caBonds);
+        	
+        	bucketSecMap.put(bucket,groupedByRanking);
         }
+        
         //Collections.sort(filteredBonds);
         
 //
@@ -99,10 +113,10 @@ public class Allocation {
         int yearsToMat = sec.getYearsToMaturity();
         double price = sec.getPrice();
 
-        if(buckets.get(0).equals(1L)){
-            return yearsToMat<= max && yearsToMat >= min && price >= 100 && price <= 105;
+        if(buckets.get(0).equals(1)){
+            return yearsToMat<= max && yearsToMat >= min && price >= MIN_PRICE && price <= MAX_PRICE_ONE;
         }
-        return yearsToMat <= max && yearsToMat >= min;
+        return yearsToMat <= max && yearsToMat >= min && price <= MAX_PRICE_OTHER;
     }
     
     private abstract class ConstraintEvaluator implements Observer{
