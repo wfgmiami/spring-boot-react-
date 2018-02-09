@@ -1,6 +1,7 @@
 package com.lordabbett.muniladder.model;
 
 import com.lordabbett.muniladder.service.Allocation;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -11,14 +12,18 @@ import java.util.Date;
 
 @Data
 public class Security implements Comparable{
-//13 fields
+//16 fields
     private String cusip;
     private double price;
     private double coupon;
+    private double investAmt;
     private String maturityDate;
     private int yearsToMaturity;
     private String sector;
     private String rating;
+    private String spRating;
+    private String moodyRating;
+    private String fitchRating;
     private FileLoader.SecRating twoGroupsRating;
     private String state;
     private String latestTraded;
@@ -74,14 +79,24 @@ public class Security implements Comparable{
         }
     }
  
-//    public String getLastTraded(){
-//    	return FileLoader.DATE_FORMAT.format(lastTraded);
+//    public int compareTo(Object o){
+//    	return ((Security)o).lastTraded.compareTo(lastTraded);
 //    }
-
+    
     public int compareTo(Object o){
-    	return ((Security)o).lastTraded.compareTo(lastTraded);
+    	 
+	     int secSortOrder = getPriority().ordinal();
+	     int sortOrder = ((Security)o).getPriority().ordinal();
+		 if(secSortOrder > sortOrder){
+			 return 1;
+		 }else if(secSortOrder < sortOrder){
+		     return -1;
+		 }else{
+		     return ((Security)o).lastTraded.compareTo(lastTraded);
+		 }
+    	 
     }
-
+    
     private enum SecPriority     {
         ABOVE_A_HEALTHCARE_NY,
         ABOVE_A_HEALTHCARE_CA,

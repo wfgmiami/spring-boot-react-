@@ -1070,7 +1070,7 @@ public class LadderAllocator {
         debug = true;
         LadderAllocator alloc = new LadderAllocator();
         alloc.init();
-        alloc.allocate(3, 8, 1000000);
+        alloc.allocate(1, 3, 1000000);
         long endTime = System.currentTimeMillis();
         print("############### Out Ladder Allocation ###################  Total time (s): " + (endTime-startTime)/1000);
         alloc.end();

@@ -37,6 +37,9 @@ public class FileLoader {
         int effDurPos = -1;
         int modDurPos = -1;
         int yieldToWorstPos = -1;
+        int spRatingPos = -1;
+		int moodyRatingPos = -1;
+		int fitchRatingPos = -1;
         boolean firstRowRead = false;
 
         while (scan.hasNextLine()) {
@@ -66,11 +69,18 @@ public class FileLoader {
                         modDurPos = i;
                     } else if ("Yield to Worst".equalsIgnoreCase(lineArray[i].trim())) {
                         yieldToWorstPos = i;
-                    }
+                    } else if ("S&P Rating".equalsIgnoreCase(lineArray[i].trim())) {
+                		spRatingPos = i;
+                	} else if ("Moody Rating".equalsIgnoreCase(lineArray[i].trim())) {
+                		moodyRatingPos = i;
+                	} else if ("Fitch Rating".equalsIgnoreCase(lineArray[i].trim())) {
+                		fitchRatingPos = i;
+                	}
                 }
                 firstRowRead = true;
                 if (cusipPos == -1 || pricePos == -1 || couponPos == -1 || maturityDatePos == -1 || sectorPos == -1 ||
-                        ratingPos == -1 || effDurPos == -1 || modDurPos == -1 || yieldToWorstPos == -1) {
+                        ratingPos == -1 || effDurPos == -1 || modDurPos == -1 || yieldToWorstPos == -1 || 
+                        spRatingPos == -1 || moodyRatingPos == -1 || fitchRatingPos == -1) {
                     throw new RuntimeException("Invalid file format " + line);
                 }
 
@@ -83,7 +93,13 @@ public class FileLoader {
                     sec.setCoupon(Double.valueOf(lineArray[couponPos].trim()));
                     sec.setSector(lineArray[sectorPos].trim());
                     sec.setRating(lineArray[ratingPos].trim());
-                    SecRating belowOrAboveA = Rating.valueOf(sec.getRating()).getQIndex() < 6 ? SecRating.ABOVE_A : SecRating.A_OR_BELOW;
+//                    SecRating belowOrAboveA = Rating.valueOf(sec.getRating()).getQIndex() < 6 ? SecRating.ABOVE_A : SecRating.A_OR_BELOW;
+                    sec.setSpRating("".equals(lineArray[spRatingPos].trim())?defaultRating:lineArray[spRatingPos].trim());
+                    sec.setMoodyRating("".equals(lineArray[moodyRatingPos].trim())?defaultRating:lineArray[moodyRatingPos].trim());
+                    sec.setFitchRating("".equals(lineArray[fitchRatingPos].trim())?defaultRating:lineArray[fitchRatingPos].trim());
+                    SecRating belowOrAboveA  = Rating.getMedianRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).getQIndex() < 6
+                    		? SecRating.ABOVE_A: SecRating.A_OR_BELOW;
+                  
                     sec.setTwoGroupsRating(belowOrAboveA);
                     sec.setEffDur(Double.valueOf(lineArray[effDurPos].trim()));
                     sec.setModDur(Double.valueOf(lineArray[modDurPos].trim()));
@@ -145,10 +161,8 @@ public class FileLoader {
                         try{
                             dt = df.parse(lineArray[lastTradedPos].trim());
                             if (dt == null) {
-//                                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
                                 sec.setLastTraded(defaultLastTraded);
                             } else {
-//                                sec.setLastTraded(DATE_FORMAT.format(dt));
                                 sec.setLastTraded(dt);
                             }
                         }catch(ParseException e){
