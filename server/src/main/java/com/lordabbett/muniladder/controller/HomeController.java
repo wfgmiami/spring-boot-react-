@@ -28,7 +28,14 @@ public class HomeController {
         return bonds.stream()
                 .collect(Collectors.toList());
     }
-
+    
+    @GetMapping(value="/app2")
+    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+    public Collection<Security> minuListApp2(){
+        return bonds.stream()
+                .collect(Collectors.toList());
+    }
+    
     @GetMapping(value="/buckets")
     @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
 //    public Collection<Security> muniFilter(@RequestParam HashMap<String, String> queryMap ){
@@ -39,6 +46,16 @@ public class HomeController {
 //        Collection<Security> allocation = alloc.buckets(queryMap);
 //        HashMap<Integer,ArrayList<Security>> allocation = alloc.buckets(queryMap);
         ArrayList<Object> allocation = alloc.buckets(queryMap);
+        return allocation;
+
+    }
+    
+    @GetMapping(value="/app2/buckets")
+    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+
+      public ArrayList<Object> muniFilterApp2(@RequestParam HashMap<String, String> queryMap ){
+        Allocation alloc = new Allocation();
+        ArrayList<Object> allocation = alloc.bucketsApp2(queryMap);
         return allocation;
 
     }

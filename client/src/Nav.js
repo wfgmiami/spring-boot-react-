@@ -9,10 +9,9 @@ class Nav extends React.Component {
     super(props);
 
     this.state = {
-      collapsed: true,
-	  minAllocation: [25000,20000,15000],
-
+      collapsed: true
     }
+
     this.toggleNavbar = this.toggleNavbar.bind(this);
 	this.onMinAllocChange = this.onMinAllocChange.bind(this);
 
@@ -53,14 +52,7 @@ class Nav extends React.Component {
               </div>
 
               <div className={ `${ classOne }` } id="navbarResponsive">
-                <div className="col-sm-2" style={{ paddingLeft: '5%'}}>
-                <p><b>Minimum Allocation</b></p>
-                  <select style={{ width: '55%', display:'inline' }} className='form-control' onChange = { this.onMinAllocChange }>
-            { minAllocation.map( ( minAlloc, idx ) => (
-                    <option key = { idx } value = { minAlloc }>{ minAlloc }</option>
-            ))}
-                  </select>
-                </div>
+
                 <div className="col-sm-5">
                     <MaturitySlider filterMaturity = { this.props.filterMaturity }/>
                 </div>

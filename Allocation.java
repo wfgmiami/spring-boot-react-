@@ -34,13 +34,7 @@ public class Allocation {
     public static final double MAX_SECTOR_PCT = 30;
     public static final double MAX_A_OR_BELOW_PCT = 30;
     public static final double MAX_SECTOR_STATE_PCT = 10;
-    public static final String[] RANKING = { "HealthCare", "nyBonds", "caBonds", "aRatedBonds", "aaRatedBonds", "couponRated"};
-    public static final int MIN_PAR = 40000;
-    public static final int MAX_PAR = 75000;
-    public static final double MAX_BOND_PCT = 10;
-    private ArrayList<Integer> buckets = new ArrayList<Integer>();  	
-    private HashMap<String, Object> tempObj = new HashMap<String, Object>();
-    
+
     private boolean debug = true;
     
     List<Security> bonds = new FileLoader().getSecList();
@@ -53,15 +47,13 @@ public class Allocation {
         fileLoader.loadFile();
     }
 
-    ArrayList<Integer> getBuckets(){
-    	return buckets;
-    }
     //public Collection<Security> buckets(HashMap<String,String> queryMap){
 //    public HashMap<Integer, ArrayList<Security>> buckets(HashMap<String,String> queryMap){
     public ArrayList<Object> buckets(HashMap<String,String> queryMap){
-    	
+    	ArrayList<Integer> buckets = new ArrayList<Integer>();
+    	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
+    	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
-        ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRankingFinal = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
         
         SortedMap<Integer, ArrayList<Security>> allocatedData = new TreeMap<Integer, ArrayList<Security>>();
         
@@ -85,9 +77,6 @@ public class Allocation {
         
   
         for(int bucket:buckets){
-        	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
-         	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
-         	
         	List<Security> bucketSecurity = filteredBonds.stream()
         			.filter( bond -> bond.getYearsToMaturity() == bucket)
         			.collect(Collectors.toList());
@@ -117,9 +106,9 @@ public class Allocation {
         	
         	groupedByRanking.put("HealthCare", healthCareBonds);
         	groupedByRanking.put("nyBonds", nyBonds);
-        	groupedByRanking.put("caBonds", caBonds);
-        	groupedByRanking.put("aRatedBonds", aRatedBonds);
-        	groupedByRanking.put("aaRatedBonds", aaRatedBonds);
+        	groupedByRanking.put("caBonds",caBonds);
+        	groupedByRanking.put("aRatedBonds", nyBonds);
+        	groupedByRanking.put("aaRatedBonds",caBonds);
         	groupedByRanking.put("couponRated", couponRated);
         	
 //        	for(Map.Entry<String,List<Security>> entry:groupedByRanking.entrySet()){
@@ -133,110 +122,6 @@ public class Allocation {
         	bucketsByRanking.add(groupedByBucket);
         }
         
-        
-        
-    	for( int bucketIndex = 0; bucketIndex < buckets.size(); bucketIndex++ ) {
-    		 List<Security> tempArr = new ArrayList<Security>();
-             HashMap<Integer, ArrayList<Security>> nyStrippedHc = new HashMap<Integer, ArrayList<Security>>();
-             HashMap<Integer, ArrayList<Security>> caStrippedHc = new HashMap<Integer, ArrayList<Security>>();
-             HashMap<Integer, ArrayList<Security>> aStrippedHcState = new HashMap<Integer, ArrayList<Security>>();
-             HashMap<Integer, ArrayList<Security>> aaStrippedHcState = new HashMap<Integer, ArrayList<Security>>();
-             HashMap<Integer, ArrayList<Security>> couponStrippedAll = new HashMap<Integer, ArrayList<Security>>();
-    		 TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucketFinal = new TreeMap<Integer, HashMap<String,List<Security>>>();
-    		 HashMap<String, List<Security>> groupedByRankingFinal = new HashMap<String, List<Security>>();
-    		 
-    		 int bucket = buckets.get(bucketIndex);
-    		 int rankIndex = Arrays.asList(RANKING).indexOf("HealthCare");
-    		 tempObj.clear();
-    		 
-    		 bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( hcBond -> tempObj.put(hcBond.getCusip(),hcBond));
-    		 
-    		 //Stripping Health Care sector from the rest of ranking groups
-    		 tempArr = bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[++rankIndex]).stream().filter(nyBond -> !tempObj.containsKey(nyBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 nyStrippedHc.put(bucket, (ArrayList<Security>) tempArr);		
-    		 
-    		 tempArr = bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[++rankIndex]).stream().filter(caBond -> !tempObj.containsKey(caBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 caStrippedHc.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[++rankIndex]).stream().filter(aRatedBond -> !tempObj.containsKey(aRatedBond.getCusip()))
-    				 .collect(Collectors.toList());
-    		 aStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[++rankIndex]).stream().filter(aaRatedbond -> !tempObj.containsKey(aaRatedbond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 aaStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[++rankIndex]).stream().filter(couponBond -> !tempObj.containsKey(couponBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 couponStrippedAll.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 //Stripping NY bonds from the rest of ranking groups
-    		 rankIndex = Arrays.asList(RANKING).indexOf("nyBonds");
-    		 tempObj.clear();
-    		 bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( nyBond -> tempObj.put(nyBond.getCusip(),nyBond));
-    		 
-    		 tempArr = aStrippedHcState.get(bucket).stream().filter(aRatedBond -> !tempObj.containsKey(aRatedBond.getCusip()))
-    				 .collect(Collectors.toList());
-    		 aStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = aaStrippedHcState.get(bucket).stream().filter(aaRatedbond -> !tempObj.containsKey(aaRatedbond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 aaStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = couponStrippedAll.get(bucket).stream().filter(couponBond -> !tempObj.containsKey(couponBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 couponStrippedAll.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 //Stripping CA bonds from the rest of ranking groups
-    		 rankIndex = Arrays.asList(RANKING).indexOf("caBonds");
-    		 tempObj.clear();
-    		 bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( caBond -> tempObj.put(caBond.getCusip(),caBond));
-    		 
-    		 tempArr = aStrippedHcState.get(bucket).stream().filter(aRatedBond -> !tempObj.containsKey(aRatedBond.getCusip()))
-    				 .collect(Collectors.toList());
-    		 aStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = aaStrippedHcState.get(bucket).stream().filter(aaRatedbond -> !tempObj.containsKey(aaRatedbond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 aaStrippedHcState.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 tempArr = couponStrippedAll.get(bucket).stream().filter(couponBond -> !tempObj.containsKey(couponBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 couponStrippedAll.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		 //Stripping A and below rated from Coupon ranked bonds from the rest of ranking groups
-    		 rankIndex = Arrays.asList(RANKING).indexOf("aRatedBonds");
-    		 tempObj.clear();
-    		 bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( aRatedBond -> tempObj.put(aRatedBond.getCusip(), aRatedBond));
-    		 
-    		 tempArr = couponStrippedAll.get(bucket).stream().filter(couponBond -> !tempObj.containsKey(couponBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 couponStrippedAll.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-     		 //Stripping AA and above rated from Coupon ranked bonds from the rest of ranking groups
-    		 rankIndex = Arrays.asList(RANKING).indexOf("aaRatedBonds");
-    		 tempObj.clear();
-    		 bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( aaRatedBond -> tempObj.put(aaRatedBond.getCusip(), aaRatedBond));
-    		 
-    		 tempArr = couponStrippedAll.get(bucket).stream().filter(couponBond -> !tempObj.containsKey(couponBond.getCusip()))
-    		         .collect(Collectors.toList());
-    		 couponStrippedAll.put(bucket, (ArrayList<Security>) tempArr);	
-    		 
-    		rankIndex = Arrays.asList(RANKING).indexOf("HealthCare");
-    		groupedByRankingFinal.put("HealthCare", bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]));
-         	groupedByRankingFinal.put("nyBonds", nyStrippedHc.get(bucket));
-         	groupedByRankingFinal.put("caBonds",caStrippedHc.get(bucket));
-         	groupedByRankingFinal.put("aRatedBonds", aStrippedHcState.get(bucket));
-         	groupedByRankingFinal.put("aaRatedBonds",aaStrippedHcState.get(bucket));
-         	groupedByRankingFinal.put("couponRated", couponStrippedAll.get(bucket));
-         	
-    		 groupedByBucketFinal.put(bucket,groupedByRankingFinal);
-             bucketsByRankingFinal.add(groupedByBucketFinal);
-    	}
-        
-        
        
 //        for(TreeMap<Integer, HashMap<String, List<Security>>> entry: bucketsByRanking){
 //        	for(Integer key : entry.keySet()){
@@ -246,12 +131,32 @@ public class Allocation {
 //        	}	
 //        }
        
-      
+        SortedMap<Integer, List<Security>> matYrSecListMap = new TreeMap<Integer, List<Security>>(new YrToMatComparator());
+        for(Security sec: filteredBonds){
+            List<Security> matyrSecList = matYrSecListMap.get(sec.getYearsToMaturity());
+            if(matyrSecList == null){
+                matyrSecList = new ArrayList<Security>();
+                matYrSecListMap.put(sec.getYearsToMaturity(), matyrSecList);
+            }
+            matyrSecList.add(sec);
+        }
+        if(debug){
+            for(Map.Entry<Integer, List<Security>> entry : matYrSecListMap.entrySet()){
+                Object o = ("----- Maturity Year: " + entry.getKey() + ". Number of securities: " + entry.getValue().size());
+                System.out.println(o.toString());
+                
+                for(Security sec: entry.getValue()){
+                    System.out.print(sec.toString());
+                }
+            }
+        }
+        
         List<ConstraintEvaluator> consEvalList = createConstraintEvaluatorsList(ladderConfig);
         
         List<LadderBucket> ladBucketList = new ArrayList<LadderBucket>();
-        generateLadder(ladBucketList, bucketsByRankingFinal, ladderConfig, consEvalList, allocatedData);
+        generateLadder(ladBucketList, matYrSecListMap, ladderConfig, consEvalList, allocatedData);
         
+//        ArrayList<SortedMap<String, Double>> summaryAlloc = new ArrayList<SortedMap<String, Double>>();
         ArrayList<Object> summaryAlloc = new ArrayList<Object>();
         for(ConstraintEvaluator consEval: consEvalList){
            System.out.println(consEval.toString());
@@ -271,35 +176,8 @@ public class Allocation {
 
     private class LadderBucket extends Observable{
         private int matYr;
-        private int currentRankIndex = 0;
-        private int currentBondIndex = 0;
-        
         private Map<Security, SecurityParAmt> secParAmtMap = new HashMap<Security, SecurityParAmt>();
 
-        private int getMatYr() {
-        	return matYr;
-        }
-        
-        private void increaseRankIndex() {
-        	currentRankIndex++;
-        }
-        
-        private int getRankIndex() {
-        	return currentRankIndex;
-        }
-        
-        private void increaseBondIndex() {
-        	currentBondIndex++;
-        }
-        
-        private int getBondIndex() {
-        	return currentBondIndex;
-        }
-        
-        private void setBondIndex(int idx) {
-        	currentBondIndex = idx;
-        }
-        
         private LadderBucket(int matYr){
             this.matYr = matYr;
         }
@@ -417,7 +295,6 @@ public class Allocation {
         }
         return yearsToMat <= max && yearsToMat >= min && price <= MAX_PRICE_OTHER;
     }
-
     
     private List<ConstraintEvaluator> createConstraintEvaluatorsList(LadderConfig ladderConfig){
 
@@ -547,8 +424,6 @@ public class Allocation {
     private class StateSectorConstraintEvaluator extends ConstraintEvaluator{
         SortedMap<String, Double> stateSectorPctMap = new TreeMap<String, Double>();
         SortedMap<String, HashMap<String, Double>> stateSectorMap = new TreeMap<String, HashMap<String, Double>>();
-        long accountSize = getOriginalAccountSize();
-        
         private StateSectorConstraintEvaluator (LadderConfig ladderConfig){
             super(ladderConfig);
         }
@@ -559,7 +434,7 @@ public class Allocation {
 
         protected boolean evaluate (Security sec, long parAmt){
             double sectorPct = stateSectorPctMap.get(getStateSectorKey(sec)) == null ? 0: stateSectorPctMap.get(getStateSectorKey(sec));
-            return sectorPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_SECTOR_STATE_PCT * accountSize / 100;
+            return sectorPct + getSecurityPct(sec, parAmt) < MAX_SECTOR_STATE_PCT;
         }
 
         public void update(Observable o, Object arg) {
@@ -593,8 +468,7 @@ public class Allocation {
 
     private class SectorConstraintEvaluator extends ConstraintEvaluator{
         SortedMap<String, Double> sectorPctMap = new TreeMap<String, Double>();
-        long accountSize = getOriginalAccountSize();
-        
+
         private SectorConstraintEvaluator (LadderConfig ladderConfig){
             super(ladderConfig);
         }
@@ -605,7 +479,7 @@ public class Allocation {
 
         protected boolean evaluate (Security sec, long parAmt){
             double sectorPct = sectorPctMap.get(getSectorKey(sec)) == null ? 0: sectorPctMap.get(getSectorKey(sec));
-            return sectorPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_SECTOR_PCT * accountSize / 100;
+            return sectorPct + getSecurityPct(sec, parAmt) < MAX_SECTOR_PCT;
         }
 
         public void update(Observable o, Object arg) {
@@ -640,8 +514,7 @@ public class Allocation {
 
     private class StateConstraintEvaluator extends ConstraintEvaluator{
         SortedMap<String, Double> statePctMap = new TreeMap<String, Double>();
-        long accountSize = getOriginalAccountSize();
-        
+
         private StateConstraintEvaluator (LadderConfig ladderConfig){
             super(ladderConfig);
         }
@@ -652,7 +525,7 @@ public class Allocation {
         
         protected boolean evaluate (Security sec, long parAmt){
             double statePct = statePctMap.get(getStateKey(sec)) == null ? 0: statePctMap.get(getStateKey(sec));
-            return statePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_STATE_PCT * accountSize / 100;
+            return statePct + getSecurityPct(sec, parAmt) < MAX_STATE_PCT;
         }
 
         public void update(Observable o, Object arg) {
@@ -678,8 +551,7 @@ public class Allocation {
 
     private class AOrBelowConstraintEvaluator extends ConstraintEvaluator{
         double aOrBelowPct = 0;
-        long accountSize = getOriginalAccountSize();
-        
+
         private AOrBelowConstraintEvaluator (LadderConfig ladderConfig){
             super(ladderConfig);
         }
@@ -690,7 +562,7 @@ public class Allocation {
 
         protected boolean evaluate (Security sec, long parAmt){
             if(getTwoGroupsRatingKey(sec) == FileLoader.SecRating.A_OR_BELOW){
-                return aOrBelowPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_A_OR_BELOW_PCT * accountSize / 100;
+                return aOrBelowPct + getSecurityPct(sec, parAmt) < MAX_A_OR_BELOW_PCT;
             }
             else{
                 return true;
@@ -724,8 +596,7 @@ public class Allocation {
 
     private class HealthCareConstraintEvaluator extends ConstraintEvaluator{
         double healthCarePct = 0;
-        long accountSize = getOriginalAccountSize();
-        
+
         private HealthCareConstraintEvaluator (LadderConfig ladderConfig){
             super(ladderConfig);
         }
@@ -736,8 +607,7 @@ public class Allocation {
         
         protected boolean evaluate (Security sec, long parAmt){
             if(SECTOR_HEALTHCARE.equals(getSectorKey(sec))){
-            	//healthCarePct is $amt not %
-                return healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_HEALTHCARE_PCT * accountSize / 100;
+                return healthCarePct + getSecurityPct(sec, parAmt) < MAX_HEALTHCARE_PCT;
             }
             else{
                 return true;
@@ -747,7 +617,6 @@ public class Allocation {
         public void update(Observable o, Object arg) {
             SecurityParAmt secParAmt = (SecurityParAmt)arg;
             if(SECTOR_HEALTHCARE.equals(getSectorKey(secParAmt.sec))){
-            	//getUpdatedSecurityPct return $amt not %
                 healthCarePct += getUpdatedSecurityPct(secParAmt);
             }
             super.update(o, arg);
@@ -770,287 +639,6 @@ public class Allocation {
         }
     }
 
-	private Security lookForBondInDiffRanking( Boolean foundBond, LadderBucket ladderBucket, HashMap<String, List<Security>> secInBucket ){
-	
-		List<Security> secInBucketByRanking = secInBucket.get(RANKING[ladderBucket.getRankIndex()]);
-		int currentRankIndex = ladderBucket.getRankIndex();
-		int currentBondIndex = 0;
-		Security chosenBond = null;
-		
-		while( !foundBond && currentRankIndex < RANKING.length - 1 ){
-			int rankIndex = (int) ladderBucket.getRankIndex();
-			chosenBond = secInBucket.get(RANKING[++rankIndex]).get(currentBondIndex);
-		}
-		if( !foundBond ){
-			return null;
-		}
-
-//		currentBucketState.currentRankIndex = currentRankIndex;
-		return chosenBond;
-	}
-	
-    private long getParAmount(Security chosenBond, LadderBucket ladderBucket, LadderConfig ladderConfig, HashMap<String, List<Security>> secInBucket) {
-    	
-		long investedAmount = ladderConfig.getLatestAccountSize();
-		int currentRankIndex = (int) ladderBucket.getRankIndex();
-		double maxBondSize = MAX_BOND_PCT * investedAmount / 100;
-		double bucketSize = investedAmount / ladderConfig.getLatestMaturityRange();
-		long allocSize = MIN_PAR + 3 * MIN_INCREMENT;
-
-		if( Math.floor( bucketSize / allocSize ) < 2 ){
-			allocSize = MIN_PAR;
-		}
-		
-		if( allocSize * chosenBond.getPrice() / 100 > maxBondSize ){
-			int bondIdx = ladderBucket.getBondIndex();
-			double testPrice = 0.0;
-
-			do{
-				List<Security> secInBucketByRanking = secInBucket.get(RANKING[currentRankIndex]);
-				
-				for( long parSize = MAX_PAR - MIN_INCREMENT; parSize >= MIN_PAR; parSize -= MIN_INCREMENT ){
-					do{
-						testPrice = secInBucketByRanking.get(bondIdx).getPrice();
-						bondIdx++;
-					}while( bondIdx <  secInBucketByRanking.size() && parSize * testPrice / 100 > maxBondSize );
-					allocSize = parSize;
-					if( allocSize * testPrice / 100 <= maxBondSize ) break;
-					bondIdx = ladderBucket.getBondIndex();
-				}
-
-				if( allocSize * testPrice / 100 > maxBondSize ){
-					boolean foundBond = false;
-					
-					while( !foundBond && currentRankIndex < RANKING.length - 1 ){
-						chosenBond = secInBucket.get(RANKING[++currentRankIndex]).get(0);
-					}
-				
-					if( !foundBond ){
-						return 0;
-					}
-			
-					bondIdx = 0;
-					allocSize = MAX_PAR;
-					
-				}else{
-					chosenBond = secInBucket.get(RANKING[++currentRankIndex]).get(--bondIdx);
-					return (long)(allocSize * chosenBond.getPrice() / PAR_PRICE);
-				}
-
-			} while ( currentRankIndex < RANKING.length );
-	
-			return 0;
-
-		}else if ( MIN_PAR * chosenBond.getPrice() / 100  > investedAmount ) {
-			return 0;
-		}else{
-			return (long)(allocSize * chosenBond.getPrice() / PAR_PRICE);
-		}
-		
-    }
-    
-    private void generateLadder(List<LadderBucket> ladBucketList,  ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
-    		SortedMap<Integer, ArrayList<Security>> allocatedData){
-    	
-    	ArrayList<Integer> buckets = getBuckets();  	
-    	ArrayList<LadderBucket>ladderBucketList = new ArrayList<LadderBucket>();
-    	long totDollarBucketAmt = ladderConfig.getOriginalAccountSize()/ladderConfig.getLatestMaturityRange();
-    	int numBuckets = buckets.size();
-    	boolean moveToNextBucket = true;
-    	
-    	for(int i = 0; i < numBuckets; i++) {
-    		int matYr = bucketsByRanking.get(i).firstKey();
-	        ladderBucketList.add(new LadderBucket(matYr)); 
-	        LadderBucket currentBucket = ladderBucketList.get(ladderBucketList.size() - 1);
-	        for(ConstraintEvaluator consEval: consEvalList){
-	            currentBucket.addObserver(consEval);
-	        }
-    	}
-    	
-    	int bucketIndex = numBuckets - 1;
-		int bucketMatYr = buckets.get(bucketIndex);
-		int currentRankIndex = 0;
-				
-    	do {
-    		LadderBucket ladderBucket = ladderBucketList.get(bucketIndex);
-    		currentRankIndex = ladderBucket.getRankIndex();
-    		int currentBondIndex = ladderBucket.getBondIndex();
-//    		long totDollarRoundedAmt = 0;
-    		
-	        ArrayList<Security> bucketBonds = new ArrayList<Security>();
-	        if(currentRankIndex < RANKING.length) {
-	        	Security chosenBond = bucketsByRanking.get(bucketIndex).get(bucketMatYr).get(RANKING[currentRankIndex]).get(currentBondIndex);
-//	        	System.out.println(chosenBond.toString());
-	        			
-	        	long rawParAmt = getParAmount(chosenBond, ladderBucket, ladderConfig, bucketsByRanking.get(bucketIndex).get(bucketMatYr));
-	 
-		        long roundedParAmt = Math.round((double)(rawParAmt/MIN_INCREMENT))*MIN_INCREMENT;
-
-	            if( evaluateConstraints(consEvalList, chosenBond, roundedParAmt) ){
-	            	//ladderBucket.addRoundedParAmount( chosenBond, roundedParAmt );
-	                ladderBucket.addSecurityParAmount(new SecurityParAmt(chosenBond, rawParAmt, roundedParAmt));
-	                ladderBucket.increaseBondIndex();                
-
-	            }else {
-	            	moveToNextBucket = false;
-	            	ladderBucketList.forEach( bucket -> { 
-	            		bucket.increaseRankIndex();
-	            		bucket.setBondIndex(0);
-	            	});
-	            }
-	            
-	         
-		        
-	            if( ladderBucket.getLadderDollarAmount() >= totDollarBucketAmt ) {
-	            	
-	            	List<SecurityParAmt> secParAmtList = ladderBucket.getSecurityParAmtList();
-	   		        Collections.sort(secParAmtList);
-	   		        
-	            	Double totalDollarAllocated = (double) ladderBucket.getLadderDollarAmount();
-	            	
-	            	for(SecurityParAmt secParAmt : secParAmtList){
-	 	                double adjDollarAmt = MIN_INCREMENT*secParAmt.sec.getPrice()/PAR_PRICE;
-	 	                if(totalDollarAllocated - adjDollarAmt >= totDollarBucketAmt){
-	 	                    ladderBucket.subtractRoundedParAmount(secParAmt.sec, MIN_INCREMENT);
-	 	                    totalDollarAllocated -= adjDollarAmt;
-	 	                }
-	 	            }
-	            	 
-	        		double leftInCash =  totDollarBucketAmt - ladderBucket.getLadderDollarAmount();		
-	        		
-	    	        for(SecurityParAmt secParAmt : secParAmtList){   	        	
-	    	        	Double investedAmt = secParAmt.getDollarAmount();
-	    	        	secParAmt.sec.setInvestAmt(investedAmt);
-	    	            bucketBonds.add(secParAmt.sec);         
-	    	        }
-	        		
-					Security cashSecurity = new Security();
-					cashSecurity.setCusip("Cash");
-					cashSecurity.setInvestAmt(leftInCash);
-//					ladderBucket.addSecurityParAmount(new SecurityParAmt(cashSecurity, (long)leftInCash, (long)leftInCash));
-					bucketBonds.add(cashSecurity);   
-					allocatedData.put(bucketMatYr, bucketBonds);
-					bucketsByRanking.get(bucketIndex).remove(bucketMatYr);
-					buckets.remove(bucketIndex);
-	           }
-	        }
-	           
-			numBuckets = buckets.size();
-
-			if( !moveToNextBucket ){
-				moveToNextBucket = true;
-			}else{
-
-				if( ( bucketIndex == 0 &&  numBuckets > 1 ) || ( numBuckets == 1 ) ){
-					bucketIndex = numBuckets - 1;
-					bucketMatYr = buckets.get(bucketIndex);
-				}else if( numBuckets > 1 ){
-					bucketMatYr = buckets.get(--bucketIndex);
-				}
-
-			}
-			
-//    		numBuckets--;
-    	}while(numBuckets > 0 && currentRankIndex < RANKING.length);
-    		
-    }
-    
-    private boolean evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt){
-        for(ConstraintEvaluator consEval: consEvalList){
-            boolean constraintPassed = consEval.evaluate(sec, parAmt);
-            if(!constraintPassed){
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private int getNumBondsPerBucket(int minYr, int maxYr){
-        int matRange = maxYr - minYr + 1;
-        if(matRange >= MIN_NUM_BONDS ){
-            return 1;
-        }
-        else{
-            return MIN_NUM_BONDS/matRange + 1;
-        }
-    }
-
-    private class YrToMatComparator implements Comparator<Integer>{
-    	
-    	public int compare(Integer a, Integer b){
-    		return b - a;
-    	}
-    }
-    
-    
-    
-    public ArrayList<Object> bucketsApp2(HashMap<String,String> queryMap){
-    	ArrayList<Integer> buckets = new ArrayList<Integer>();
-    	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
-    	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
-        ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
-        
-        SortedMap<Integer, ArrayList<Security>> allocatedData = new TreeMap<Integer, ArrayList<Security>>();
-        
-        Long acctSize = 0L;
-        
-        max = Integer.valueOf(queryMap.get("max"));
-        min = Integer.parseInt(queryMap.get("min"));
-        acctSize = Long.parseLong(queryMap.get("investedAmount"));
-        
-        for(int i = min; i <= max; i++){
-            buckets.add(i);
-        }
-        
-        LadderConfig ladderConfig = new LadderConfig(min, max, getNumBondsPerBucket(min, max), max - min + 1, acctSize);
-      
-        List<Security> filteredBonds = this.bonds.stream()
-            .filter(this::filterBonds)
-            .collect(Collectors.toList());
-        
-        Collections.sort(filteredBonds);
-        
-        SortedMap<Integer, List<Security>> matYrSecListMap = new TreeMap<Integer, List<Security>>(new YrToMatComparator());
-        for(Security sec: filteredBonds){
-            List<Security> matyrSecList = matYrSecListMap.get(sec.getYearsToMaturity());
-            if(matyrSecList == null){
-                matyrSecList = new ArrayList<Security>();
-                matYrSecListMap.put(sec.getYearsToMaturity(), matyrSecList);
-            }
-            matyrSecList.add(sec);
-        }
-        if(debug){
-            for(Map.Entry<Integer, List<Security>> entry : matYrSecListMap.entrySet()){
-                Object o = ("----- Maturity Year: " + entry.getKey() + ". Number of securities: " + entry.getValue().size());
-                System.out.println(o.toString());
-                
-                for(Security sec: entry.getValue()){
-                    System.out.print(sec.toString());
-                }
-            }
-        }
-        
-        List<ConstraintEvaluator> consEvalList = createConstraintEvaluatorsList(ladderConfig);
-        
-        List<LadderBucket> ladBucketList = new ArrayList<LadderBucket>();
-        generateLadder(ladBucketList, matYrSecListMap, ladderConfig, consEvalList, allocatedData);
-        
-        ArrayList<Object> summaryAlloc = new ArrayList<Object>();
-        for(ConstraintEvaluator consEval: consEvalList){
-           System.out.println(consEval.toString());
-           if(consEval.showAllocation() == null){
-        	   summaryAlloc.add(consEval.showAllocationSectorInState());
-           }else{
-        	   summaryAlloc.add(consEval.showAllocation());
-           }
-        }
-        
-        summaryAlloc.add(allocatedData);
-       
-        return summaryAlloc;
-        
-    }
-    
     private void generateLadder(List<LadderBucket> ladBucketList, SortedMap<Integer, List<Security>> matYrSecListMap, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
     		SortedMap<Integer, ArrayList<Security>> allocatedData){
     	
@@ -1144,7 +732,30 @@ public class Allocation {
         }
     }
     
+    private boolean evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt){
+        for(ConstraintEvaluator consEval: consEvalList){
+            boolean constraintPassed = consEval.evaluate(sec, parAmt);
+            if(!constraintPassed){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private int getNumBondsPerBucket(int minYr, int maxYr){
+        int matRange = maxYr - minYr + 1;
+        if(matRange >= MIN_NUM_BONDS ){
+            return 1;
+        }
+        else{
+            return MIN_NUM_BONDS/matRange + 1;
+        }
+    }
+
+    private class YrToMatComparator implements Comparator<Integer>{
+    	
+    	public int compare(Integer a, Integer b){
+    		return b - a;
+    	}
+    }
 }
-
-
-
