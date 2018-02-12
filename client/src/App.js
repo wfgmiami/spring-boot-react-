@@ -57,7 +57,7 @@ class App extends Component {
                 let allocSectorByState = munis[4];
                 let summary = { allocSector, allocState, allocRating };
                 console.log('FINAL.....summary, allocatedData----', summary, allocatedData, allocSectorByState);
-
+debugger;
                 const bucketsSummary = this.createSummary( summary, allocSectorByState );
                 const bucketsByRows = this.createRows( allocatedData );
                 const columns = this.createColumns();
@@ -154,6 +154,7 @@ class App extends Component {
 		let arr = [];
 
 		Object.keys( allocSectorByState ).forEach( state => {
+		    let keep = false;
 			obj['portfolioSummary'] = state;
 			arr.push(obj);
 			obj = {};
@@ -163,9 +164,15 @@ class App extends Component {
 				obj['percentageAllocated'] =  Number( ( ( allocSectorByState[state][sector] * 1 / this.state.investedAmount *  1 ) * 100 ).toFixed(2) ) + '%';
 //				allocSectorByState[state][sector].toLocaleString();
 				obj['rule'] = '<= 10%';
-				arr.push(obj);
+				if(obj['dollarAllocated'] !== '0') {
+				    arr.push(obj);
+				    keep = true;
+				}
 				obj = {};
 			})
+
+			if(!keep) arr.splice(-1,1);
+
 
 		})
 		//let result = arrangedPortfolioSummary.concat(arr);
@@ -227,7 +234,7 @@ class App extends Component {
 				}
 
 				let percBucket =  Number( ( totalInBucket / this.state.investedAmount * 100 ) ).toFixed(2).toLocaleString();
-				totalByBucket[bucket] = '$' + totalInBucket.toLocaleString() + ', ' + percBucket + '%';
+				totalByBucket[bucket] = '$' + Number((totalInBucket).toFixed(2)).toLocaleString() + ', ' + percBucket + '%';
 				totalInBucket = 0;
 
 		})
@@ -243,7 +250,7 @@ class App extends Component {
 					if( bond ){
 						if( j === 0 ){
 							if( bond.cusip === 'Cash' ){
-								row[(k).toString()] = bond.cusip + ': $' + bond.investAmt.toLocaleString();
+								row[(k).toString()] = bond.cusip + ': $' + Number((bond.investAmt).toFixed(2)).toLocaleString();
 								cashPosition += bond.investAmt;
 							}else{
 								row[(k).toString()] = bond.cusip + ', ' + bond.coupon + '%, ' + bond.maturityDate.substring(0,6) + bond.maturityDate.substring(8);
