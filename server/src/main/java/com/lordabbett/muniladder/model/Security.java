@@ -26,6 +26,7 @@ public class Security implements Comparable{
     private String fitchRating;
     private FileLoader.SecRating twoGroupsRating;
     private String state;
+    private String rank;
     private String latestTraded;
     private Date lastTraded;
     private double effDur;
