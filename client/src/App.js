@@ -73,7 +73,7 @@ debugger;
 		let rowObj = {};
 		let arrangedPortfolioSummary = [];
 		const columnFields = [ 'portfolioSummary', 'dollarAllocated', 'percentageAllocated', 'rule', 'group' ];
-
+debugger;
 		groups.forEach( alloc => {
 			let fields = Object.keys( summary[alloc] );
 			let group = alloc;
@@ -99,8 +99,9 @@ debugger;
 				}
 				if( rowObj[columnFields[1]] !== '$0' ){
 					bucketsSummary.push( rowObj );
-					rowObj = {};
+
 				}
+				rowObj = {};
 			})
 		})
 

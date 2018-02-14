@@ -38,16 +38,10 @@ public class HomeController {
     
     @GetMapping(value="/buckets")
     @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
-//    public Collection<Security> muniFilter(@RequestParam HashMap<String, String> queryMap ){
-//    public HashMap<Integer,ArrayList<Security>> muniFilter(@RequestParam HashMap<String, String> queryMap ){
       public ArrayList<Object> muniFilter(@RequestParam HashMap<String, String> queryMap ){
         Allocation alloc = new Allocation();
-        
-//        Collection<Security> allocation = alloc.buckets(queryMap);
-//        HashMap<Integer,ArrayList<Security>> allocation = alloc.buckets(queryMap);
         ArrayList<Object> allocation = alloc.buckets(queryMap);
         return allocation;
-
     }
     
     @GetMapping(value="/app2/buckets")
