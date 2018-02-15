@@ -73,7 +73,7 @@ debugger;
 		let rowObj = {};
 		let arrangedPortfolioSummary = [];
 		const columnFields = [ 'portfolioSummary', 'dollarAllocated', 'percentageAllocated', 'rule', 'group' ];
-debugger;
+
 		groups.forEach( alloc => {
 			let fields = Object.keys( summary[alloc] );
 			let group = alloc;
@@ -225,10 +225,15 @@ debugger;
 		let maxTdDate = 0;
 		let tradeDateRange = '';
         let totalInvested = 0;
-
+debugger;
 		buckets.forEach( bucket => {
-				lenBucket.push( objBuckets[bucket].length );
-				numBonds += objBuckets[bucket].length;
+		        let bucketLen = objBuckets[bucket].length;
+				lenBucket.push( bucketLen );
+				if( objBuckets[bucket][bucketLen - 1].cusip == "Cash" ){
+				    numBonds += bucketLen - 1;
+				}else{
+				    numBonds += bucketLen;
+				}
 
 				for( let j = 0; j < objBuckets[bucket].length; j++ ){
 					totalInBucket += objBuckets[bucket][j].investAmt;
