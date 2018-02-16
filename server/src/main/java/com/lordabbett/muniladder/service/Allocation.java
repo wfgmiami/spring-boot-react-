@@ -88,7 +88,10 @@ public class Allocation {
         	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
          	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
          	
-        	List<Security> bucketSecurity = filteredBonds.stream()
+         	List<Security> filterZZStates = filteredBonds.stream()
+         			.filter( bond -> !bond.getState().equals("ZZ"))
+         			.collect(Collectors.toList());
+        	List<Security> bucketSecurity = filterZZStates.stream()
         			.filter( bond -> bond.getYearsToMaturity() == bucket)
         			.collect(Collectors.toList());
         	List<Security> healthCareBonds = bucketSecurity.stream()
@@ -799,22 +802,20 @@ public class Allocation {
         }
     }
 
-	private Security lookForBondInDiffRanking( Boolean foundBond, LadderBucket ladderBucket, HashMap<String, List<Security>> secInBucket ){
+	private Security lookForBondInDiffRanking( LadderBucket ladderBucket, HashMap<String, List<Security>> secInBucket ){
 	
-		List<Security> secInBucketByRanking = secInBucket.get(RANKING[ladderBucket.getRankIndex()]);
-		int currentRankIndex = ladderBucket.getRankIndex();
-		int currentBondIndex = 0;
+		int rankIndex = ladderBucket.getRankIndex();
+		rankIndex++;
+		List<Security> secInBucketByRanking = secInBucket.get(RANKING[rankIndex]);
+		int bondIndex = 0;
 		Security chosenBond = null;
 		
-		while( !foundBond && currentRankIndex < RANKING.length - 1 ){
-			int rankIndex = (int) ladderBucket.getRankIndex();
-			chosenBond = secInBucket.get(RANKING[++rankIndex]).get(currentBondIndex);
+		while( secInBucket.get(RANKING[rankIndex]).isEmpty() && rankIndex < RANKING.length - 1 ){
+			rankIndex++;
 		}
-		if( !foundBond ){
-			return null;
+		if(  !secInBucket.get(RANKING[rankIndex]).isEmpty() ) {
+			chosenBond = secInBucket.get(RANKING[rankIndex]).get(bondIndex);
 		}
-
-//		currentBucketState.currentRankIndex = currentRankIndex;
 		return chosenBond;
 	}
 	
@@ -900,6 +901,7 @@ public class Allocation {
 		int bucketMatYr = buckets.get(bucketIndex);
 		int currentRankIndex = 0;
 		int aaRatedRankIndex = Arrays.asList(RANKING).indexOf("aaRatedBonds");
+		Security chosenBond = null;
 		
     	do {
     		LadderBucket ladderBucket = ladBucketList.get(bucketIndex);
@@ -908,8 +910,13 @@ public class Allocation {
     		
 	        ArrayList<Security> bucketBonds = new ArrayList<Security>();
 	        if(currentRankIndex < RANKING.length) {
-	        	Security chosenBond = bucketsByRank.get(bucketIndex).get(bucketMatYr).get(RANKING[currentRankIndex]).get(currentBondIndex);
-	        			
+	        	if(bucketsByRank.get(bucketIndex).get(bucketMatYr).get(RANKING[currentRankIndex]).isEmpty() && currentRankIndex < RANKING.length) {
+	        		chosenBond = lookForBondInDiffRanking( ladderBucket, bucketsByRank.get(bucketIndex).get(bucketMatYr) );
+	        	}else {
+	        		chosenBond = bucketsByRank.get(bucketIndex).get(bucketMatYr).get(RANKING[currentRankIndex]).get(currentBondIndex);
+	        	}
+	        		
+	        	
 	        	long rawParAmt = getParAmount(chosenBond, ladderBucket, ladderConfig, bucketsByRank.get(bucketIndex).get(bucketMatYr));
 	 
 		        long roundedParAmt = Math.round((double)(rawParAmt/MIN_INCREMENT))*MIN_INCREMENT;
