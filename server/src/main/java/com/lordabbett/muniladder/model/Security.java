@@ -99,9 +99,10 @@ public class Security implements Comparable{
     }
     
     private enum SecPriority     {
+    	ABOVE_A_HEALTHCARE_NON_NY_CA,
         ABOVE_A_HEALTHCARE_NY,
         ABOVE_A_HEALTHCARE_CA,
-        ABOVE_A_HEALTHCARE_NON_NY_CA,
+//        ABOVE_A_HEALTHCARE_NON_NY_CA,
         ABOVE_A_NY,
         ABOVE_A_CA,
         ABOVE_A_NON_NY_CA,

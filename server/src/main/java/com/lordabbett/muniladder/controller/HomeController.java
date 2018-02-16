@@ -23,21 +23,24 @@ public class HomeController {
     public HomeController(){}
 
     @GetMapping(value="/")
-    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+    @CrossOrigin
+//    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
     public Collection<Security> minuList(){
         return bonds.stream()
                 .collect(Collectors.toList());
     }
     
     @GetMapping(value="/app2")
-    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+    @CrossOrigin
+//    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
     public Collection<Security> minuListApp2(){
         return bonds.stream()
                 .collect(Collectors.toList());
     }
     
     @GetMapping(value="/buckets")
-    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+    @CrossOrigin
+//    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
       public ArrayList<Object> muniFilter(@RequestParam HashMap<String, String> queryMap ){
         Allocation alloc = new Allocation();
         ArrayList<Object> allocation = alloc.buckets(queryMap);
@@ -45,7 +48,8 @@ public class HomeController {
     }
     
     @GetMapping(value="/app2/buckets")
-    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
+    @CrossOrigin
+//    @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5000", "http://10.3.160.199:3000" })
 
       public ArrayList<Object> muniFilterApp2(@RequestParam HashMap<String, String> queryMap ){
         Allocation alloc = new Allocation();

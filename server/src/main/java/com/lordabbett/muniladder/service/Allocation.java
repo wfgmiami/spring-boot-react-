@@ -57,7 +57,15 @@ public class Allocation {
     	ArrayList<Integer> copyOfBuckets = new ArrayList<Integer>(buckets);
     	return copyOfBuckets;
     }
-
+    
+    ArrayList<Integer> getParAmount(){
+    	ArrayList<Integer> parList = new ArrayList<Integer>();
+    	for(int i = MIN_PAR; i <= MAX_PAR; i += MIN_INCREMENT){
+    		parList.add(i);
+    	}
+    	return parList;
+    }
+    
     public ArrayList<Object> buckets(HashMap<String,String> queryMap){
   
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
@@ -221,10 +229,10 @@ public class Allocation {
     		rankIndex = Arrays.asList(RANKING).indexOf("HealthCare");
     		 
     		bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]).forEach( bond -> bond.setRank("HealthCare"));
-    		nyStrippedHc.get(bucket).forEach( bond -> bond.setRank("nyRated"));
-    		caStrippedHc.get(bucket).forEach( bond -> bond.setRank("caRated"));
-    		aStrippedHcState.get(bucket).forEach( bond -> bond.setRank("aRated"));
-    		aaStrippedHcState.get(bucket).forEach( bond -> bond.setRank("aaRated"));
+    		nyStrippedHc.get(bucket).forEach( bond -> bond.setRank("nyBonds"));
+    		caStrippedHc.get(bucket).forEach( bond -> bond.setRank("caBonds"));
+    		aStrippedHcState.get(bucket).forEach( bond -> bond.setRank("aRatedBonds"));
+    		aaStrippedHcState.get(bucket).forEach( bond -> bond.setRank("aaRatedBonds"));
     		couponStrippedAll.get(bucket).forEach( bond -> bond.setRank("couponRated"));
 			
     		groupedByRankingFinal.put("HealthCare", bucketsByRanking.get(bucketIndex).get(bucket).get(RANKING[rankIndex]));
@@ -246,19 +254,17 @@ public class Allocation {
         
         generateLadder(ladBucketList, bucketsByRank, ladderConfig, consEvalList, allocatedData);
         
-//        reduceCashBalance(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig,ladBucketList);
-        
         ArrayList<Object> summaryAlloc = new ArrayList<Object>();
-        summaryAlloc = reduceCashBalance(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig);
+//        summaryAlloc = reduceCashBalance(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig);
         
-//        for(ConstraintEvaluator consEval: consEvalList){
-//           System.out.println(consEval.toString());
-//           if(consEval.showAllocation() == null){
-//        	   summaryAlloc.add(consEval.showAllocationSectorInState());
-//           }else{
-//        	   summaryAlloc.add(consEval.showAllocation());
-//           }
-//        }
+        for(ConstraintEvaluator consEval: consEvalList){
+           System.out.println(consEval.toString());
+           if(consEval.showAllocation() == null){
+        	   summaryAlloc.add(consEval.showAllocationSectorInState());
+           }else{
+        	   summaryAlloc.add(consEval.showAllocation());
+           }
+        }
         
         summaryAlloc.add(allocatedData);
         return summaryAlloc;
@@ -485,8 +491,8 @@ public class Allocation {
 
         protected SecurityParAmt getSecurityParAmt(Security sec){
             return secParAmtMap.get(sec);
-        }  	
-
+        }  		
+        
         @Override
         public void update(Observable o, Object arg) {
             SecurityParAmt argSecParAmt = (SecurityParAmt)arg;
@@ -500,7 +506,7 @@ public class Allocation {
             }
         }
 
-        protected abstract boolean evaluate (Security sec, long parAmt);
+        protected abstract boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList);
     }
 
     
@@ -537,23 +543,41 @@ public class Allocation {
         	return roundedParAmt;
         }
         
+        private int getRank(){
+        	String t = sec.getRank();
+        	int test = Arrays.asList(RANKING).indexOf(sec.getRank());
+            return  Arrays.asList(RANKING).indexOf(sec.getRank());
+        }
+
         /**
          * Better rankings compare as greater.
          * @param o Rating object
          * @return -1, 0, 1 if less than, equal to or greater
          */
+//        public int compareTo(Object o) {
+//            if (getDollarAmount() < ((SecurityParAmt)o).getDollarAmount()) {
+//                return -1;
+//            }
+//            else if (getDollarAmount() > ((SecurityParAmt)o).getDollarAmount()) {
+//                return 1;
+//            }
+//            else {
+//                return 0;
+//            }
+//        }
+
         public int compareTo(Object o) {
-            if (getDollarAmount() < ((SecurityParAmt)o).getDollarAmount()) {
+            if (getRank() < ((SecurityParAmt)o).getRank()) {
                 return -1;
             }
-            else if (getDollarAmount() > ((SecurityParAmt)o).getDollarAmount()) {
+            else if (getRank() > ((SecurityParAmt)o).getRank()) {
                 return 1;
             }
             else {
                 return 0;
             }
         }
-
+        
         public String toString(){
             return "Dollar Amount: " + ALLOC_FORMAT.format(getDollarAmount()) +
                     ". RoundedParAmt: " + ALLOC_FORMAT.format(roundedParAmt) +
@@ -575,7 +599,7 @@ public class Allocation {
             return sec.getState() + "::" + sec.getSector();
         }
 
-        protected boolean evaluate (Security sec, long parAmt){
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucket){
             double sectorPct = stateSectorPctMap.get(getStateSectorKey(sec)) == null ? 0: stateSectorPctMap.get(getStateSectorKey(sec));
             return sectorPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_SECTOR_STATE_PCT * accountSize / 100;
         }
@@ -635,7 +659,7 @@ public class Allocation {
             return sec.getSector();
         }
 
-        protected boolean evaluate (Security sec, long parAmt){
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucket){
             double sectorPct = sectorPctMap.get(getSectorKey(sec)) == null ? 0: sectorPctMap.get(getSectorKey(sec));
             return sectorPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_SECTOR_PCT * accountSize / 100;
         }
@@ -682,7 +706,7 @@ public class Allocation {
             return sec.getState();
         }
         
-        protected boolean evaluate (Security sec, long parAmt){
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList){
             double statePct = statePctMap.get(getStateKey(sec)) == null ? 0: statePctMap.get(getStateKey(sec));
             return statePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_STATE_PCT * accountSize / 100;
         }
@@ -720,7 +744,7 @@ public class Allocation {
             return sec.getTwoGroupsRating();
         }
 
-        protected boolean evaluate (Security sec, long parAmt){
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList){
             if(getTwoGroupsRatingKey(sec) == FileLoader.SecRating.A_OR_BELOW){
                 return aOrBelowPct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_A_OR_BELOW_PCT * accountSize / 100;
             }
@@ -754,6 +778,59 @@ public class Allocation {
         }
     }
 
+    public ArrayList<Integer>optimizeHealthCare(List<LadderBucket> ladderBucketList){
+    	
+    	List<LadderBucket> lb = ladderBucketList;
+    	for(int i = 0; i < ladderBucketList.size(); i++){
+    		LadderBucket bucket = ladderBucketList.get(i);
+    		List<SecurityParAmt> test = bucket.getSecurityParAmtList();
+    		test.forEach(bond-> System.out.println(bond.sec.getSector()));
+//    		System.out.println(test.toString());
+    	
+    	}
+//    	Security firstBond = (Security) secParAmtMap.keySet().toArray()[0];
+//    	Security secondBond = (Security) secParAmtMap.keySet().toArray()[1];
+//
+//    	double firstBondInvestAmt = firstBond.getInvestAmt();
+//    	double secondBondInvestAmt = secondBond.getInvestAmt();
+//    	
+//		double firstPrice = firstBond.getPrice() /100;
+//		double secondPrice = secondBond.getPrice() / 100;
+		int investedAmount = 1000000;
+		Double maxAllocPerBond = MAX_BOND_PCT * investedAmount;
+    	ArrayList<Integer> optimizedPar = new ArrayList<Integer> ();
+    	
+   	    ArrayList<Integer> parList = getParAmount();
+ 	
+    	for( int par1 = 0; par1 < parList.size() - 1; par1++ ){
+			for( int par2 = 0; par2 < parList.size() - 1; par2++ ){
+//				if( parList.get(par1) * firstPrice <= maxAllocPerBond && parList.get(par2) * secondPrice <= maxAllocPerBond ){
+//					if( parList.get(par1) * firstPrice + parList.get(par2) * secondPrice === allocLimit){
+//						trackObj.closeToLimit.push( 0 );
+//						trackObj.parOne.push( parList[par1] );
+//						trackObj.parTwo.push( parList[par2] );
+//					}else if( parList.get(par1) * firstPrice + parList.get(par2) * secondPrice < allocLimit ){
+//						closeToLimit = allocLimit - ( parList.get(par1) * firstPrice + parList.get(par2) * secondPrice );
+//						trackObj.closeToLimit.push( closeToLimit );
+//						trackObj.parOne.push( parList.get(par1) );
+//						trackObj.parTwo.push( parList.get(par2) );
+//					}
+//				}
+			}
+		}
+
+//		let closest = Math.min( ...trackObj.closeToLimit );
+//
+//		for( let i = 0; i < trackObj['closeToLimit'].length; i++ ){
+//			if( trackObj['closeToLimit'][i] === closest ) return [ trackObj.parOne[i], trackObj.parTwo[i] ];
+//		}
+//    	
+    	optimizedPar.add(50000);
+    	optimizedPar.add(55000);
+    	return optimizedPar;
+    	
+    }
+    
     private class HealthCareConstraintEvaluator extends ConstraintEvaluator{
         double healthCarePct = 0;
         long accountSize = getOriginalAccountSize();
@@ -766,9 +843,13 @@ public class Allocation {
             return sec.getSector();
         }
         
-        protected boolean evaluate (Security sec, long parAmt){
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList){
             if(SECTOR_HEALTHCARE.equals(getSectorKey(sec))){
             	//healthCarePct is $amt not %
+            	
+            	if(!(healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_HEALTHCARE_PCT * accountSize / 100)){
+            		optimizeHealthCare(ladderBucketList);
+            	}
                 return healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_HEALTHCARE_PCT * accountSize / 100;
             }
             else{
@@ -921,7 +1002,7 @@ public class Allocation {
 	 
 		        long roundedParAmt = Math.round((double)(rawParAmt/MIN_INCREMENT))*MIN_INCREMENT;
 
-	            if( evaluateConstraints(consEvalList, chosenBond, roundedParAmt) ){
+	            if( evaluateConstraints(consEvalList, chosenBond, roundedParAmt, ladBucketList) ){
 
 	                ladderBucket.addSecurityParAmount(new SecurityParAmt(chosenBond, rawParAmt, roundedParAmt));
 	                ladderBucket.increaseBondIndex();                
@@ -945,7 +1026,7 @@ public class Allocation {
 	            	ladderBucket.removeSecurity(chosenBond);
 	            	
 	            	List<SecurityParAmt> secParAmtList = ladderBucket.getSecurityParAmtList();
-//	   		        Collections.sort(secParAmtList);
+	   		        Collections.sort(secParAmtList);
 	   		               
 	        		double leftInCash =  totDollarBucketAmt - ladderBucket.getLadderDollarAmt();		
 	        		
@@ -988,6 +1069,78 @@ public class Allocation {
     		
     }
     
+    private HashMap<Double, String> checkLimits(Security testBond, double investedAmount, double allocatedCash, Map<String, Double> allocRating, Map<String, Double> allocSector, Map<String, Double> allocState){
+    	
+		double maxHealthCare = MAX_HEALTHCARE_PCT * investedAmount / 100;
+		double maxSector = MAX_SECTOR_PCT * investedAmount / 100;
+		double maxNYState = MAX_STATE_PCT * investedAmount / 100;
+		double maxCAState = MAX_STATE_PCT * investedAmount / 100;
+		double maxState = MAX_STATE_PCT * investedAmount / 100;
+		double maxAandBelow = MAX_A_OR_BELOW_PCT * investedAmount / 100;
+		double allocationLimit = 0.0;
+	    double leftRoom = 0.0;
+    	double price = testBond.getPrice();
+		String sector = testBond.getSector();
+		String state = testBond.getState();
+		HashMap<Double, String>allocationLimitType = new HashMap<Double, String>();
+		
+    	if(!allocSector.containsKey(sector)){
+    		allocSector.put(sector, 0.0);
+    	}
+    	
+    	if(!allocState.containsKey(state)){
+    		allocState.put(state, 0.0);
+    	}
+    	
+    	String limitType = sector;
+		
+		allocationLimit = maxSector - allocSector.get(sector);
+
+		leftRoom = maxState -  allocState.get(state);
+		if( allocationLimit > leftRoom ){
+			allocationLimit = leftRoom;
+			limitType = state;
+		}
+
+		if( testBond.getRank().equals("HealthCare") ){
+				leftRoom = maxHealthCare - allocSector.get(sector);
+				if( allocationLimit > leftRoom ){
+				allocationLimit = leftRoom;
+				limitType = "HealthCare";
+			}
+		}
+
+		if( testBond.getRank().equals("nyBonds") ){
+	   		leftRoom = maxNYState - allocState.get("NY");
+			if( allocationLimit > leftRoom ){
+				allocationLimit = leftRoom;
+				limitType = state;
+			}
+		}
+
+		if( testBond.getRank().equals("caBonds")){
+			leftRoom = maxCAState - allocState.get("CA");
+			if( allocationLimit > leftRoom ){
+				allocationLimit = leftRoom;
+				limitType = state;
+			}
+		}
+
+		if( testBond.getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW) ){
+			leftRoom = maxAandBelow - allocRating.get("aAndBelow");
+			if( allocationLimit > leftRoom ){
+				allocationLimit = leftRoom;
+				limitType = "aAndBelow";
+			}
+		}
+		
+		if( allocationLimit < 0 ) allocationLimit = 0;
+		if( allocationLimit > allocatedCash ) allocationLimit = allocatedCash;
+		
+		allocationLimitType.put(allocationLimit, limitType);
+		return allocationLimitType;
+    }
+    
     private ArrayList<Object> reduceCashBalance(SortedMap<Integer, ArrayList<Security>>allocatedData, List<ConstraintEvaluator>consEvalList, ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRankingFinal,
     		LadderConfig ladderConfig){
     	ArrayList<Integer> buckets = getBuckets();
@@ -1003,30 +1156,27 @@ public class Allocation {
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> b = bucketsByRankingFinal;
         
     	buckets.forEach( bucketNumber -> {
+    		
     		double investedAmount = ladderConfig.getAccountSize();
-    		double maxHealthCare = MAX_HEALTHCARE_PCT * investedAmount / 100;
-    		double maxSector = MAX_SECTOR_PCT * investedAmount / 100;
-    		double maxNYState = MAX_STATE_PCT * investedAmount / 100;
-    		double maxCAState = MAX_STATE_PCT * investedAmount / 100;
-    		double maxState = MAX_STATE_PCT * investedAmount / 100;
-    		double maxAandBelow = MAX_A_OR_BELOW_PCT * investedAmount / 100;
     		double minIncrementToAllocate = 0.0;
             double allocationLimit = 0.0;
-            double leftRoom = 0.0;
             int bondNum = 0;
 			int checkIncrements = 0;
 			boolean maxIncrement = false;
 			boolean allocCheck = false;
 			int bucketIndex = buckets.indexOf(bucketNumber);
-			HashMap<String, Boolean> trackOverLimit = new HashMap<String, Boolean>();
 			
-	        Map<String, Double> allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
+			HashMap<String, Boolean> trackOverLimit = new HashMap<String, Boolean>();
+			HashMap<Double, String> allocationLimitType = new HashMap<Double, String>();
+	        
+			Map<String, Double> allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
 	        Map<String, Double> allocRating = ( TreeMap<String, Double> ) summaryAlloc.get(1);
 	        Map<String, Double> allocState = ( TreeMap<String, Double> ) summaryAlloc.get(2);
 	        Map<String, Double> allocSector = ( TreeMap<String, Double> ) summaryAlloc.get(3);
 	        
 			ArrayList<String> checkCusips = new ArrayList<String>();
 			ArrayList<Security> bucket = new ArrayList<Security>();
+			Security testBond = null;
 			bucket = allocatedData.get(bucketNumber);
 			int rankIndex = 0; 
 			int bucketLength = bucket.size() - 1;
@@ -1042,50 +1192,13 @@ public class Allocation {
 					int bondsInBucket =  bucketsByRankingFinal.get(bucketIndex).get(bucketNumber).get(RANKING[rankIndex]).size();
 					
 					for( int i = 0; i <  bondsInBucket; i++ ){
-						Security testBond = bucketsByRankingFinal.get(bucketIndex).get(bucketNumber).get(RANKING[rankIndex]).get(i);
+						testBond = bucketsByRankingFinal.get(bucketIndex).get(bucketNumber).get(RANKING[rankIndex]).get(i);
 						double price = testBond.getPrice();
 						String sector = testBond.getSector();
 						String state = testBond.getState();
+						allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
+						allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
 						
-			        	if(!allocSector.containsKey(sector)){
-			        		allocSector.put(sector, 0.0);
-			        	}
-			        	
-			        	if(!allocState.containsKey(state)){
-			        		allocState.put(state, 0.0);
-			        	}
-			        	
-						allocationLimit = maxSector - allocSector.get(sector);
-						leftRoom = maxState - allocState.get(state);
-						if( allocationLimit > leftRoom ){
-							allocationLimit = leftRoom;
-						}
-						if( testBond.getRank().equals("HealthCare") ){
-								leftRoom = maxHealthCare - allocSector.get(sector);
-								if( allocationLimit > leftRoom ){
-								allocationLimit = leftRoom;
-							}
-						}
-						if( testBond.getRank().equals("nyRated") ){
-							leftRoom = maxNYState - allocState.get(STATE_NY);
-							if( allocationLimit > leftRoom ){
-								allocationLimit = leftRoom;
-							}
-						}
-						if( testBond.getRank().equals("caRated") ){
-							leftRoom = maxCAState - allocState.get(STATE_CA);
-							if( allocationLimit > leftRoom ){
-								allocationLimit = leftRoom;
-							}
-						}
-						if( testBond.getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW) ){
-							leftRoom = maxAandBelow - allocRating.get("aAndBelow");
-							if( allocationLimit > leftRoom ){
-								allocationLimit = leftRoom;
-							}
-						}
-						if( allocationLimit < 0 ) allocationLimit = 0;
-						if( allocationLimit > allocatedCash ) allocationLimit = allocatedCash;
 						minIncrementToAllocate = ( allocatedCash ) / ( MIN_PAR * ( price * 1 / 100 ) );
 						bondNum = (int) Math.floor( minIncrementToAllocate );
 
@@ -1154,48 +1267,15 @@ public class Allocation {
 				double price = bucket.get(i).getPrice();
 				String sector =  bucket.get(i).getSector();
 				String state =  bucket.get(i).getState();
-				allocationLimit = maxSector - allocSector.get(sector);
 				String limitType = sector;
-
-				leftRoom = maxState -  allocState.get(state);
-				if( allocationLimit > leftRoom ){
-					allocationLimit = leftRoom;
-					limitType = state;
-				}
-
-				if( bucket.get(i).getRank().equals("HealthCare") ){
-	 				leftRoom = maxHealthCare - allocSector.get(sector);
- 					if( allocationLimit > leftRoom ){
-						allocationLimit = leftRoom;
-						limitType = "HealthCare";
-					}
-				}
-
-				if( bucket.get(i).getRank().equals("nyRated") ){
-			   		leftRoom = maxNYState - allocState.get("NY");
-					if( allocationLimit > leftRoom ){
-						allocationLimit = leftRoom;
-						limitType = state;
-					}
-				}
-
-				if( bucket.get(i).getRank().equals("caRated")){
-					leftRoom = maxCAState - allocState.get("CA");
-					if( allocationLimit > leftRoom ){
-						allocationLimit = leftRoom;
-						limitType = state;
-					}
-				}
-
-				if( bucket.get(i).getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW) ){
-					leftRoom = maxAandBelow - allocRating.get("aAndBelow");
-					if( allocationLimit > leftRoom ){
-						allocationLimit = leftRoom;
-						limitType = "aAndBelow";
-					}
-				}
 				
-				if( allocationLimit < 0 ) allocationLimit = 0;
+				testBond = bucket.get(i);
+//				allocationLimit = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocState, allocSector);
+				allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
+				allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
+				limitType = allocationLimitType.values().toString();
+				
+				
 				minIncrementToAllocate = ( allocatedCash ) / ( MIN_INCREMENT * ( price * 1 / 100 ) );
 				bondNum = (int) Math.floor( minIncrementToAllocate );
 				checkIncrements = 1;
@@ -1262,9 +1342,9 @@ public class Allocation {
     	return summaryAlloc;
     }
   
-    private boolean evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt){
+    private boolean evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt, List<LadderBucket> ladderBucketList){
         for(ConstraintEvaluator consEval: consEvalList){
-            boolean constraintPassed = consEval.evaluate(sec, parAmt);
+            boolean constraintPassed = consEval.evaluate(sec, parAmt, ladderBucketList);
             if(!constraintPassed){
                 return false;
             }
@@ -1379,7 +1459,7 @@ public class Allocation {
             long rawParAmt = (long)(ladderConfig.getLatestAccountSize()*PAR_PRICE/ladderConfig.getLatestMaturityRange()/sec.getPrice()/ladderConfig.numBondsPerBucket);
             //get the rounded amount
             long roundedParAmt = Math.round((double)(rawParAmt/MIN_INCREMENT))*MIN_INCREMENT;
-            if(evaluateConstraints(consEvalList, sec, roundedParAmt)){
+            if(evaluateConstraints(consEvalList, sec, roundedParAmt, ladBucketList)){
                 totDollarRoundedAmt += roundedParAmt*sec.getPrice()/PAR_PRICE;
                 ladderBucket.addSecurityParAmount(new SecurityParAmt(sec, rawParAmt, roundedParAmt));
                 numBondsSelected++;
