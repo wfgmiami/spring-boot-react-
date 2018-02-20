@@ -33,7 +33,8 @@ class Versiontwo extends Component {
 
     componentDidMount(){
 //        fetch("http://localhost:8080/app2")
-        fetch("http://10.3.160.199:8080/app2")
+//        fetch("http://10.3.160.199:8080/app2")
+        fetch("http://192.168.1.126:8080/app2")
         .then( response => response.json() )
         .then( data => this.setState( { munis: data } ) )
     }
@@ -44,7 +45,8 @@ class Versiontwo extends Component {
 
     createLadder( investedAmount ){
 //        let url = 'http://localhost:8080/app2/buckets';
-        let url = "http://10.3.160.199:8080/app2/buckets";
+//        let url = "http://10.3.160.199:8080/app2/buckets";
+        let url = "http://192.168.1.126:8080/app2/buckets";
 //        console.log('.............this.state', this.state)
         this.setState({ investedAmount });
         let filter = Object.assign( {}, this.state.maturityRange, { investedAmount });
@@ -319,18 +321,17 @@ class Versiontwo extends Component {
                 <div style={{ marginTop: '135px' }} className="row">
                 <PortfolioSummary portfolioSummary = { this.state.portfolioSummary } />
             	{ this.state.bucketsByRows.length !== 0 ?
-                    <div className="col-sm-8">
+                    <div className="col-sm-12">
                         <BucketAllocation columns = { this.state.columns } bucketsByRows = { this.state.bucketsByRows }/>
                         <BucketSummary bucketsSummary = { this.state.bucketsSummary } />
                         <div>&nbsp;</div>
                     </div>:
-                    <div className="col-sm-8">
+                    <div className="col-sm-12">
                         <BucketSummaryPlaceholder />
             		</div> }
 
-                    <div className="col-sm-4">
+                    <div className="col-sm-12">
                         <Constraint />
-                        <MuniList munis = { munis } />
                     </div>
                 </div>
              </div>

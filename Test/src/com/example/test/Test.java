@@ -11,9 +11,9 @@ public class Test {
 
 
     public static void main(String[] args){
-        System.out.println(SecPriority.A_OR_BELOW_CA);
-        int t = SecPriority.valueOf("A_OR_BELOW_CA").ordinal();
-        System.out.println(Integer.toString(t));
+    	String test = "VA::Local Go";
+    	int pos = test.indexOf("[");
+    	System.out.println(pos);
     }
 
     public void test(){

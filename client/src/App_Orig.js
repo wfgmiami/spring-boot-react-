@@ -336,17 +336,18 @@ debugger;
                 <div style={{ marginTop: '135px' }} className="row">
                 <PortfolioSummary portfolioSummary = { this.state.portfolioSummary } />
             	{ this.state.bucketsByRows.length !== 0 ?
-                    <div className="col-sm-12">
+                    <div className="col-sm-8">
                         <BucketAllocation columns = { this.state.columns } bucketsByRows = { this.state.bucketsByRows }/>
                         <BucketSummary bucketsSummary = { this.state.bucketsSummary } />
                         <div>&nbsp;</div>
                     </div>:
-                    <div className="col-sm-12">
+                    <div className="col-sm-8">
                         <BucketSummaryPlaceholder />
             		</div> }
 
-                    <div className="col-sm-12">
+                    <div className="col-sm-4">
                         <Constraint />
+                        <MuniList munis = { munis } />
                     </div>
                 </div>
              </div>
