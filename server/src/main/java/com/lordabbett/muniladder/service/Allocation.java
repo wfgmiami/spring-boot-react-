@@ -259,8 +259,8 @@ public class Allocation {
         generateLadder(ladBucketList, bucketsByRank, ladderConfig, consEvalList, allocatedData);
         
         ArrayList<Object> summaryAlloc = new ArrayList<Object>();
-        CashReducer cashReducer = new CashReducer();
-        summaryAlloc = cashReducer.reduceCashBalance(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig);
+        CashReducer cashReducer = new CashReducer(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig);
+        summaryAlloc = cashReducer.reduceCashBalance();
 //        summaryAlloc = allocatedByConstraints(consEvalList);
         
         summaryAlloc.add(allocatedData);
@@ -1386,20 +1386,42 @@ public class Allocation {
     
     
     private class CashReducer{
-    	private ArrayList<Integer> buckets = getBuckets();
     	
+    	private ArrayList<Integer> buckets = getBuckets();
         private ArrayList<Object> summaryAlloc = new ArrayList<Object>();
     	private double totalCash = 0.0;
-    	
-    	private ArrayList<Object> reduceCashBalance(SortedMap<Integer, ArrayList<Security>>allocatedData, List<ConstraintEvaluator>consEvalList, 
+    	private SortedMap<Integer, ArrayList<Security>>allocatedData;
+    	private List<ConstraintEvaluator>consEvalList;
+    	private ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRankingFinal;
+    	private LadderConfig ladderConfig;
+    	private double investedAmount;
+    	private double limitOnCashMove = 0.01 * investedAmount;
+		private Map<String, Double> allocHealthCare;
+	    private Map<String, Double> allocRating;
+	    private Map<String, Double> allocState;
+	    private Map<String, Double> allocSector;
+		private HashMap<String, Boolean> trackOverLimit = new HashMap<String, Boolean>();
+		
+    	private CashReducer(SortedMap<Integer, ArrayList<Security>>allocatedData, List<ConstraintEvaluator>consEvalList, 
     			ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRankingFinal, LadderConfig ladderConfig){
-        
-    		summaryAlloc = allocatedByConstraints(consEvalList);
-    		consEvalList.get(3).allocateCashSector();
-    		double investedAmount = ladderConfig.getAccountSize();
-    		double limitOnCashMove = 0.01 * investedAmount;
+    		this.allocatedData = allocatedData;
+    		this.consEvalList = consEvalList;
+    		this.bucketsByRankingFinal = bucketsByRankingFinal;
+    		this.ladderConfig = ladderConfig;
+    		this.investedAmount = ladderConfig.getAccountSize();
+    		this.summaryAlloc = allocatedByConstraints(consEvalList);
+    		this.allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
+	        this.allocRating = ( TreeMap<String, Double> ) summaryAlloc.get(1);
+	        this.allocState = ( TreeMap<String, Double> ) summaryAlloc.get(2);
+	        this.allocSector = ( TreeMap<String, Double> ) summaryAlloc.get(3);
+	
+    	}
+    	
+    	private void allocCashToNewBonds(){
+    		//to allocate Cash to the allocSector
+    		this.consEvalList.get(3).allocateCashSector();
     		
-        	buckets.forEach( bucketNumber -> {
+    		buckets.forEach( bucketNumber -> {
         		
         		double minIncrementToAllocate = 0.0;
                 double allocationLimit = 0.0;
@@ -1408,15 +1430,7 @@ public class Allocation {
     			boolean maxIncrement = false;
     			boolean allocCheck = false;
     			int bucketIndex = buckets.indexOf(bucketNumber);
-    			
-    			HashMap<String, Boolean> trackOverLimit = new HashMap<String, Boolean>();
-    			HashMap<Double, String> allocationLimitType = new HashMap<Double, String>();
-    	        
-    			Map<String, Double> allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
-    	        Map<String, Double> allocRating = ( TreeMap<String, Double> ) summaryAlloc.get(1);
-    	        Map<String, Double> allocState = ( TreeMap<String, Double> ) summaryAlloc.get(2);
-    	        Map<String, Double> allocSector = ( TreeMap<String, Double> ) summaryAlloc.get(3);
-    	        
+    			HashMap<Double, String> allocationLimitType = new HashMap<Double, String>();   	
     			ArrayList<String> checkCusips = new ArrayList<String>();
     			ArrayList<Security> bucket = new ArrayList<Security>();
     			Security testBond = null;
@@ -1504,93 +1518,105 @@ public class Allocation {
     				}while( rankIndex < RANKING.length );
     				
     			}
-    			
-    			for( int i = 0; i < bucketLength; i++ ){
+    			allocCashToExistingBonds(bucket);
+    		});
+    	}
+    	
+    	private void allocCashToExistingBonds(ArrayList<Security>bucket){
+    		
+    		int bucketLength = bucket.size() - 1;
+    		double allocatedCash = bucket.get(bucketLength).getInvestAmt();
+    		boolean allocCheck = false;
+    		
+    		for( int i = 0; i < bucketLength; i++ ){
 
-    				double price = bucket.get(i).getPrice();
-    				String sector =  bucket.get(i).getSector();
-    				String state =  bucket.get(i).getState();
-    				String limitType = sector;
-    				
-    				testBond = bucket.get(i);
-//    				allocationLimit = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocState, allocSector);
-    				allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
-    				allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
-    				limitType = allocationLimitType.values().toString();
-    				
-    				
-    				minIncrementToAllocate = ( allocatedCash ) / ( MIN_INCREMENT * ( price * 1 / 100 ) );
-    				bondNum = (int) Math.floor( minIncrementToAllocate );
-    				checkIncrements = 1;
-    				maxIncrement = false;
-    				boolean stopIncrease = false;
+				double price = bucket.get(i).getPrice();
+				String sector =  bucket.get(i).getSector();
+				String state =  bucket.get(i).getState();
+				String limitType = sector;
+				
+				Security testBond = bucket.get(i);
+				HashMap<Double, String> allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
+				double allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
+				limitType = allocationLimitType.values().toString();
+				
+				
+				double minIncrementToAllocate = ( allocatedCash ) / ( MIN_INCREMENT * ( price * 1 / 100 ) );
+				int bondNum = (int) Math.floor( minIncrementToAllocate );
+				int checkIncrements = 1;
+				boolean maxIncrement = false;
+				boolean stopIncrease = false;
 
-    				if( bondNum > 0 ){
-    					do{
+				if( bondNum > 0 ){
+					do{
 
-    						minIncrementToAllocate = Math.floor( checkIncrements ) * ( MIN_INCREMENT * ( price * 1 / 100 ) );
-    						allocCheck = ( minIncrementToAllocate <= allocationLimit ||  ( !stopIncrease && !trackOverLimit.containsKey(limitType))) && 
-    								( bucket.get(i).getInvestAmt() + minIncrementToAllocate <= MAX_BOND_PCT * investedAmount ) &&
-    								( ( bucket.get(i).getInvestAmt() + minIncrementToAllocate ) / ( bucket.get(i).getPrice() / 100 ) ) <= MAX_PAR; 
+						minIncrementToAllocate = Math.floor( checkIncrements ) * ( MIN_INCREMENT * ( price * 1 / 100 ) );
+						allocCheck = ( minIncrementToAllocate <= allocationLimit ||  ( !stopIncrease && !trackOverLimit.containsKey(limitType))) && 
+								( bucket.get(i).getInvestAmt() + minIncrementToAllocate <= MAX_BOND_PCT * investedAmount ) &&
+								( ( bucket.get(i).getInvestAmt() + minIncrementToAllocate ) / ( bucket.get(i).getPrice() / 100 ) ) <= MAX_PAR; 
 
-    						if( minIncrementToAllocate > 0 && allocCheck ){
-    							if( minIncrementToAllocate > allocationLimit ){
-    							   stopIncrease = true;
-    							}
-    							checkIncrements++;
-    						}else{
-    							maxIncrement = true;
-    						}
-    					} while( checkIncrements <= bondNum && !maxIncrement );
-    				}
+						if( minIncrementToAllocate > 0 && allocCheck ){
+							if( minIncrementToAllocate > allocationLimit ){
+							   stopIncrease = true;
+							}
+							checkIncrements++;
+						}else{
+							maxIncrement = true;
+						}
+					} while( checkIncrements <= bondNum && !maxIncrement );
+				}
 
-    				if( checkIncrements > 1 ) --checkIncrements;
-    				minIncrementToAllocate = checkIncrements;
-    				minIncrementToAllocate = Math.floor( minIncrementToAllocate ) * ( MIN_INCREMENT * ( price * 1 / 100 ) );
-    				
-    				allocCheck = ( bucket.get(i).getInvestAmt() + minIncrementToAllocate <= MAX_BOND_PCT * investedAmount ) && ( ( bucket.get(i).getInvestAmt() + minIncrementToAllocate ) / 
-    						 ( bucket.get(i).getPrice() / 100 ) ) <= MAX_PAR && allocatedCash >= minIncrementToAllocate;
+				if( checkIncrements > 1 ) --checkIncrements;
+				minIncrementToAllocate = checkIncrements;
+				minIncrementToAllocate = Math.floor( minIncrementToAllocate ) * ( MIN_INCREMENT * ( price * 1 / 100 ) );
+				
+				allocCheck = ( bucket.get(i).getInvestAmt() + minIncrementToAllocate <= MAX_BOND_PCT * investedAmount ) && ( ( bucket.get(i).getInvestAmt() + minIncrementToAllocate ) / 
+						 ( bucket.get(i).getPrice() / 100 ) ) <= MAX_PAR && allocatedCash >= minIncrementToAllocate;
 
-    				if( minIncrementToAllocate > 0 && minIncrementToAllocate <= allocationLimit && allocCheck || ( ( stopIncrease || checkIncrements == 1 ) 
-    						&& !trackOverLimit.containsKey(limitType) && allocatedCash >= minIncrementToAllocate && allocCheck) ){
+				if( minIncrementToAllocate > 0 && minIncrementToAllocate <= allocationLimit && allocCheck || ( ( stopIncrease || checkIncrements == 1 ) 
+						&& !trackOverLimit.containsKey(limitType) && allocatedCash >= minIncrementToAllocate && allocCheck) ){
 
-    					if( !trackOverLimit.containsKey(limitType) && minIncrementToAllocate > allocationLimit ) {
-    						trackOverLimit.put(limitType, true);
-    					}
+					if( !trackOverLimit.containsKey(limitType) && minIncrementToAllocate > allocationLimit ) {
+						trackOverLimit.put(limitType, true);
+					}
 
-    					bucket.get(bucketLength).setInvestAmt(allocatedCash - minIncrementToAllocate);
-    					double currentAllocAmount = bucket.get(i).getInvestAmt();
-    					bucket.get(i).setInvestAmt(currentAllocAmount + minIncrementToAllocate);
-    				
-    					double currentAllocState = allocState.get(state);
-    					allocState.put(state, currentAllocState + minIncrementToAllocate);
-    				
-    					double currentAllocSector = allocSector.get(sector);
-    					allocSector.put(sector, currentAllocSector + minIncrementToAllocate);
-    					
-    					if( bucket.get(i).getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW) ){
-    						double currentAllocRating = allocRating.get("aAndBelow");
-    						allocRating.put("aAndBelow", currentAllocRating + minIncrementToAllocate);
-    					}
-    					
-    					double currentAllocCash = allocSector.get("Cash") - allocatedCash;
-    					allocatedCash = bucket.get(bucketLength).getInvestAmt();
-    					allocSector.put("Cash", currentAllocCash + allocatedCash);
+					bucket.get(bucketLength).setInvestAmt(allocatedCash - minIncrementToAllocate);
+					double currentAllocAmount = bucket.get(i).getInvestAmt();
+					bucket.get(i).setInvestAmt(currentAllocAmount + minIncrementToAllocate);
+				
+					double currentAllocState = allocState.get(state);
+					allocState.put(state, currentAllocState + minIncrementToAllocate);
+				
+					double currentAllocSector = allocSector.get(sector);
+					allocSector.put(sector, currentAllocSector + minIncrementToAllocate);
+					
+					if( bucket.get(i).getTwoGroupsRating().equals(FileLoader.SecRating.A_OR_BELOW) ){
+						double currentAllocRating = allocRating.get("aAndBelow");
+						allocRating.put("aAndBelow", currentAllocRating + minIncrementToAllocate);
+					}
+					
+					double currentAllocCash = allocSector.get("Cash") - allocatedCash;
+					allocatedCash = bucket.get(bucketLength).getInvestAmt();
+					allocSector.put("Cash", currentAllocCash + allocatedCash);
 
-    				}		
-    			}
-    			allocatedCash = bucket.get(bucketLength).getInvestAmt();
-    			if(allocatedCash > limitOnCashMove) {
-    				totalCash += limitOnCashMove;
-    				bucket.get(bucketLength).setInvestAmt(allocatedCash - limitOnCashMove);
-    			}else {
-    				totalCash += allocatedCash;
-    				bucket.get(bucketLength).setInvestAmt(0.0);
-    			}
-    						
-        	});
+				}		
+			}
+			
+				allocatedCash = bucket.get(bucketLength).getInvestAmt();
+				if(allocatedCash > limitOnCashMove) {
+					totalCash += limitOnCashMove;
+					bucket.get(bucketLength).setInvestAmt(allocatedCash - limitOnCashMove);
+				}else {
+					totalCash += allocatedCash;
+					bucket.get(bucketLength).setInvestAmt(0.0);
+				}
+    		
+    	}
+    	
+    	private ArrayList<Object> reduceCashBalance(){
         	
-        	
+    		allocCashToNewBonds();
+    		
         	do {
         		buckets.forEach( bucketNumber -> {
         	
@@ -1620,6 +1646,10 @@ public class Allocation {
         		}
         	}while(totalCash > 1.0);
         	
+        	buckets.forEach( bucketNumber -> {
+        		ArrayList<Security> bucket = allocatedData.get(bucketNumber);
+        		allocCashToExistingBonds(bucket);
+        	});
         	
         	return summaryAlloc;
         }

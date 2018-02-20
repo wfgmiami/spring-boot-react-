@@ -23,7 +23,7 @@ class AmountSlider extends React.Component {
 	}
 
 	render(){
-		console.log('state......', this.state, this.props)
+		console.log('.......AmountSlider...state......', this.state, this.props)
 		return(
 
 			<div>
@@ -39,6 +39,7 @@ class AmountSlider extends React.Component {
 				<div style={{ float: 'left' }}>
 					<button style={{ marginTop: '5px', marginBottom:'5px', marginLeft:'10px' }} onClick={ this.onGenerate } className="btn btn-primary" type="submit">Create Ladder</button>
 				</div>
+			
 				<br style={{ clear: 'both' }}/>
 				<div>&nbsp;</div>
 			</div>
