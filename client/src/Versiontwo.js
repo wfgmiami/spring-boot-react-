@@ -53,16 +53,18 @@ class Versiontwo extends Component {
         axios.get(url, { params: filter })
             .then( response => response.data )
             .then( munis => {
-                let allocatedData = munis[5];
-                let allocSector = munis[3];
-                let allocState = munis[2];
-                let allocRating = munis[1];
-                let allocSectorByState = munis[4];
+				let allocRating = munis[1];
+				let allocState = munis[2];
+				let allocSector = munis[3];
+				let allocSectorByState = munis[4];
+				let averageRating = munis[5];
+				let medianRating = munis[6];
+				let allocatedData = munis[7];
                 let summary = { allocSector, allocState, allocRating };
                 console.log('FINAL.....summary, allocatedData----', summary, allocatedData, allocSectorByState);
 
                 const bucketsSummary = this.createSummary( summary, allocSectorByState );
-                const bucketsByRows = this.createRows( allocatedData );
+                const bucketsByRows = this.createRows( allocatedData, averageRating, medianRating );
                 const columns = this.createColumns();
                 this.setState({ columns });
                 this.setState({ bucketsByRows });
@@ -192,7 +194,7 @@ class Versiontwo extends Component {
 		return columns;
 	}
 
-	createRows( objBuckets ){
+	createRows( objBuckets, averageRating, medianRating ){
 
 		const buckets = Object.keys( objBuckets );
 		const numBuckets = buckets.length;
@@ -214,12 +216,14 @@ class Versiontwo extends Component {
 		let avgPrice = 0;
 		let avgCoupon = 0;
 		let avgYtw = 0;
+		let avgCurrentYield = 0;
 		let tdRange = [];
 		let portfolioSummary = [];
 		let minTdDate = 0;
 		let maxTdDate = 0;
 		let tradeDateRange = '';
         let totalInvested = 0;
+		let percentCash = 0;
 
 		buckets.forEach( bucket => {
 				lenBucket.push( objBuckets[bucket].length );
@@ -235,6 +239,8 @@ class Versiontwo extends Component {
 
 		})
 
+		bucketsByRows.push( totalByBucket );
+		bucketsByRows.push({});
 		maxBondsInBucket = Math.max(...lenBucket);
 		console.log('.....totalByBucket,maxBondInBucket, rowsPerBond, bucketIndex, numBuckets, numBonds', totalByBucket,maxBondsInBucket, rowsPerBond, bucketIndex, numBuckets, objBuckets, numBonds);
 		for(let i = 0; i < maxBondsInBucket; i++){
@@ -254,6 +260,7 @@ class Versiontwo extends Component {
 						}else if( j === 1 && bond.cusip !== 'Cash' ){
 							row[(k).toString()] = bond.state + ', ' + bond.sector + ', ' + bond.rating;
 
+							avgCurrentYield += ( bond.coupon / bond.price ) * bond.investAmt;
 							avgEffDuration += bond.effDur * bond.investAmt;
 							avgModDuration += bond.modDur * bond.investAmt;
 							avgYtw += bond.yieldToWorst * bond.investAmt;
@@ -289,6 +296,9 @@ class Versiontwo extends Component {
 			tradeDateRange = minTdDate + ' - ' + maxTdDate;
 		}
 
+		avgCurrentYield = Number( avgCurrentYield * 100 / ( this.state.investedAmount - cashPosition ) ).toFixed(2);
+		if( isNaN( avgCurrentYield ) ) avgCurrentYield = '';
+		else avgCurrentYield = avgCurrentYield + '%';
 		avgEffDuration = Number( avgEffDuration / ( this.state.investedAmount - cashPosition ) ).toFixed(2);
 		if( isNaN( avgEffDuration ) ) avgEffDuration = '';
 		avgModDuration = Number( avgModDuration / ( this.state.investedAmount - cashPosition ) ).toFixed(2);
@@ -301,12 +311,14 @@ class Versiontwo extends Component {
 		else avgCoupon = avgCoupon + '%';
 		avgPrice = Number( avgPrice / ( this.state.investedAmount - cashPosition ) ).toFixed(2);
 		if( isNaN( avgPrice ) ) avgPrice = '';
-		cashPosition = '$' +  Number(cashPosition.toFixed(2)).toLocaleString();
+		percentCash = Number((cashPosition / this.state.investedAmount * 100).toFixed(2)).toLocaleString();
+		cashPosition = '$' +  Number(cashPosition.toFixed(2)).toLocaleString() + " | " + percentCash + "%";
 
-		portfolioSummary.push( { avgPrice, avgCoupon, yieldToWorst: avgYtw, modifiedDuration: avgModDuration, effectiveDuration: avgEffDuration, cash: cashPosition, numberOfBonds: numBonds, portfolioSize, tradeDateRange } );
+		portfolioSummary.push( { avgPrice, avgCoupon, yieldToWorst: avgYtw, modifiedDuration: avgModDuration, effectiveDuration: avgEffDuration, 
+			cash: cashPosition, numberOfBonds: numBonds, portfolioSize, avgCurrentYield, averageRating, medianRating, tradeDateRange } );
 
 		this.setState( { portfolioSummary } );
-		bucketsByRows.push( totalByBucket );
+		// bucketsByRows.push( totalByBucket );
 		return bucketsByRows;
 	}
 
@@ -317,7 +329,7 @@ class Versiontwo extends Component {
           <div className="App">
             <div className="container-fluid">
                 <Nav filterMaturity = { this.filterMaturity } createLadder = { this.createLadder } />
-                <div style={{ marginTop: '135px' }} className="row">
+                <div style={{ marginTop: '100px' }}>
                 <PortfolioSummary portfolioSummary = { this.state.portfolioSummary } />
             	{ this.state.bucketsByRows.length !== 0 ?
                     <div className="col-sm-12">

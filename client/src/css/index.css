@@ -120,6 +120,10 @@ input::-moz-focus-inner,
 input::-moz-focus-outer {
   border: 0; }
 
+.navbar-custom {
+    background-color: #aead95;
+ }
+  
 table {
   border-collapse: collapse;
   margin-bottom: 20px; }
@@ -135,8 +139,9 @@ th, td {
   text-align: center; }
 
 .react-grid-Cell {
+  text-align: center; 
   border: none; }
 
-.react-grid-Row:nth-child(4n+4) {
+/* .react-grid-Row:nth-child(4n+4) {
   background: #395870;
-  border-bottom: 1px solid #000; }
+  border-bottom: 1px solid #000; } */

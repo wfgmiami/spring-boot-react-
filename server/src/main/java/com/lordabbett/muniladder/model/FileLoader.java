@@ -99,7 +99,6 @@ public class FileLoader {
                     sec.setFitchRating("".equals(lineArray[fitchRatingPos].trim())?defaultRating:lineArray[fitchRatingPos].trim());
                     SecRating belowOrAboveA  = Rating.getMedianRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).getQIndex() < 6
                     		? SecRating.ABOVE_A: SecRating.A_OR_BELOW;
-                  
                     sec.setTwoGroupsRating(belowOrAboveA);
                     sec.setEffDur(Double.valueOf(lineArray[effDurPos].trim()));
                     sec.setModDur(Double.valueOf(lineArray[modDurPos].trim()));

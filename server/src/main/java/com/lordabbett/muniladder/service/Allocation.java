@@ -1,6 +1,7 @@
 package com.lordabbett.muniladder.service;
 
 import com.lordabbett.muniladder.model.FileLoader;
+import com.lordabbett.muniladder.model.Rating;
 import com.lordabbett.muniladder.model.Security;
 
 import org.springframework.stereotype.Component;
@@ -263,7 +264,12 @@ public class Allocation {
         summaryAlloc = cashReducer.reduceCashBalance();
 //        summaryAlloc = allocatedByConstraints(consEvalList);
         
+    	RatingCalculations avgAndMedRating = new RatingCalculations(allocatedData, ladderConfig.getOriginalAccountSize(), summaryAlloc);
+    	avgAndMedRating.calcPortAvgAndMedRating();
+    	
         summaryAlloc.add(allocatedData);
+      
+        
         return summaryAlloc;
 
     }
@@ -761,6 +767,7 @@ public class Allocation {
 
         @Override
         public SortedMap<String, Double> showAllocation(){
+  
         	return statePctMap;
         }
 
@@ -778,6 +785,7 @@ public class Allocation {
         }
     }
 
+    
     private class AOrBelowConstraintEvaluator extends ConstraintEvaluator{
         double aOrBelowPct = 0;
         long accountSize = getOriginalAccountSize();
@@ -1122,9 +1130,11 @@ public class Allocation {
 		double maxBondSize = MAX_BOND_PCT * investedAmount / 100;
 		double bucketSize = investedAmount / ladderConfig.getLatestMaturityRange();
 		long allocSize = STARTING_PAR;
+		int adjMinPar = MIN_PAR;
 		
 		if( Math.floor( bucketSize / allocSize ) < 2 ){
 //			allocSize = MIN_PAR;
+			adjMinPar = CASH_REDUCTION_PAR;
 			allocSize = (long) (Math.floor( investedAmount / ladderConfig.getOriginalMaturityRange() / MIN_INCREMENT ) * MIN_INCREMENT);
 		}
 		
@@ -1137,7 +1147,7 @@ public class Allocation {
 				if(secInBucketByRanking.isEmpty()) {
 					currentRankIndex++;
 				}else {
-					for( long parSize = MAX_PAR - MIN_INCREMENT; parSize >= MIN_PAR; parSize -= MIN_INCREMENT ){
+					for( long parSize = MAX_PAR - MIN_INCREMENT; parSize >= adjMinPar; parSize -= MIN_INCREMENT ){
 						do{
 							testPrice = secInBucketByRanking.get(bondIdx).getPrice();
 							bondIdx++;
@@ -1655,7 +1665,61 @@ public class Allocation {
         }
     	
     }
+    
+    
+    private class RatingCalculations{
+    	
+    	private SortedMap<Integer, ArrayList<Security>>allocatedData;
+    	private ArrayList<Object> summaryAlloc;
+    	private double investedAmount;
+    	private double medRating = 0.0;
+    	private double avgRating = 0.0;
+    	
+    	private RatingCalculations(SortedMap<Integer, ArrayList<Security>>allocatedData, double investedAmount, ArrayList<Object> summaryAlloc){
+    		this.allocatedData = allocatedData;
+    		this.investedAmount = investedAmount;
+    		this.summaryAlloc = summaryAlloc;
+    	}
+    	
+        private void calcPortAvgAndMedRating(){
+        	ArrayList<Integer> buckets = getBuckets();
+        	Rating medianRating = null;
+        	Rating averageRating = null;
+        	
+        	buckets.forEach( bucketNumber -> {
+        		
+        		double mvPercent = 0.0;
+    			ArrayList<Security> bucket = new ArrayList<Security>();
+    			bucket = allocatedData.get(bucketNumber);
+    			int bucketLength = bucket.size();
+    	
+    			int bucketEnd = bucket.get(bucketLength - 1).getCusip() == "Cash" ? bucketLength - 1 : bucketLength;
+        		for( int i = 0; i < bucketEnd; i++ ){
+        			Security sec = bucket.get(i);
+    				mvPercent = bucket.get(i).getInvestAmt() / investedAmount;
+    				
+    				medRating += mvPercent * Rating.getMedianRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).getQIndex();
+    				avgRating += mvPercent * Rating.getAverageRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).getQIndex();
+        		}
+        		
+        	});
+        	
+        	medRating = Math.ceil(medRating);
+        	avgRating = Math.ceil(avgRating);
+        	medRating = medRating == 1 ? 2 : medRating;
+        	avgRating = avgRating == 1 ? 2 : avgRating;
+      
+        	medianRating = Rating.valueOf(medRating);
+        	averageRating = Rating.valueOf(avgRating);
+        	summaryAlloc.add(averageRating.toString());
+        	summaryAlloc.add(medianRating.toString());
+        	
+        }
+    	
+    }
   
+
+    
     private String evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt, List<LadderBucket> ladderBucketList){
         String result = null;
     	for(ConstraintEvaluator consEval: consEvalList){
@@ -1703,7 +1767,6 @@ public class Allocation {
     }
     
     public ArrayList<Object> bucketsApp2(HashMap<String,String> queryMap){
-    	ArrayList<Integer> buckets = new ArrayList<Integer>();
     	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
     	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
@@ -1763,6 +1826,9 @@ public class Allocation {
            }
         }
         
+    	RatingCalculations avgAndMedRating = new RatingCalculations(allocatedData, ladderConfig.getOriginalAccountSize(), summaryAlloc);
+    	avgAndMedRating.calcPortAvgAndMedRating();
+  
         summaryAlloc.add(allocatedData);
        
         return summaryAlloc;

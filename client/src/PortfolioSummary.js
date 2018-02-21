@@ -18,6 +18,9 @@ class PortfolioSummary extends React.Component{
 			{ key: 'yieldToWorst', name: 'Yield To Worst', resizable: true },
 			{ key: 'avgPrice', name: 'Avg Price', resizable: true },
 			{ key: 'avgCoupon', name: 'Avg Coupon', resizable: true },
+			{ key: 'avgCurrentYield', name: 'Avg Current Yield', resizable: true },
+			{ key: 'averageRating', name: 'Average Rating', resizable: true },
+			{ key: 'medianRating', name: 'Median Rating', resizable: true },
 			{ key: 'tradeDateRange', name: 'Trade Date Range', resizable: true },
 
 		]
