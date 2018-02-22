@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -45,7 +46,7 @@ public class Allocation {
     public static final double MAX_BOND_PCT = 10;
     private ArrayList<Integer> buckets = new ArrayList<Integer>();  	
     private HashMap<String, Object> tempObj = new HashMap<String, Object>();
-    
+//    private Map<String, Double> sortedByAllocAmount;
     private boolean debug = true;
     
     List<Security> bonds = new FileLoader().getSecList();
@@ -96,7 +97,6 @@ public class Allocation {
         
         Collections.sort(filteredBonds);
         
-  
         for(int bucket:buckets){
         	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
          	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
@@ -259,20 +259,55 @@ public class Allocation {
         
         generateLadder(ladBucketList, bucketsByRank, ladderConfig, consEvalList, allocatedData);
         
-        ArrayList<Object> summaryAlloc = new ArrayList<Object>();
+        ArrayList<Object> summary = new ArrayList<Object>();
+        ArrayList<Map<String, Double>> summaryAlloc = new ArrayList<Map<String, Double>>();
+      
         CashReducer cashReducer = new CashReducer(allocatedData,consEvalList,bucketsByRankingFinal,ladderConfig);
         summaryAlloc = cashReducer.reduceCashBalance();
+  
 //        summaryAlloc = allocatedByConstraints(consEvalList);
         
     	RatingCalculations avgAndMedRating = new RatingCalculations(allocatedData, ladderConfig.getOriginalAccountSize(), summaryAlloc);
-    	avgAndMedRating.calcPortAvgAndMedRating();
+    	Map<String, String> ratingStats = avgAndMedRating.calcPortAvgAndMedRating();
     	
-        summaryAlloc.add(allocatedData);
-      
+        ArrayList<Map<String, Double>> sortedByAllocAmount = new ArrayList<Map<String, Double>>();
+    	summaryAlloc.forEach(alloc->{
+    		
+    				Map<String, Double>sorted = alloc.entrySet().stream()
+        			.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+        					(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    		
+        			 sortedByAllocAmount.add(sorted);
+    	});
+    	        	
+        ArrayList<Map<String, HashMap<String, Double>>> sortedSectorsInState = new ArrayList<Map<String, HashMap<String, Double>>>();
+        Map<String, HashMap<String, Double>> sectorAmounts = new TreeMap<String, HashMap<String, Double>>();
         
-        return summaryAlloc;
+        sectorsInStateAlloc(consEvalList).forEach(alloc -> {
+        	HashMap<String, Double> sortedSectors;
+        	for(Entry<String, HashMap<String, Double>> entry: alloc.entrySet()){
+        		HashMap<String, Double> test = entry.getValue();
+        		sortedSectors = test.entrySet().stream()
+        		.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+    			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+    					(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        		System.out.println(sortedSectors);
+        		sectorAmounts.put(entry.getKey(), sortedSectors);
+        		
+        	}
+        	sortedSectorsInState.add(sectorAmounts);
+        });
+        
+        summary.add(sortedByAllocAmount);
+        summary.add(sortedSectorsInState);
+        summary.add(ratingStats);
+        summary.add(allocatedData);
+    
+        return summary;
 
     }
+    
 
     private class LadderBucket extends Observable{
         private int matYr;
@@ -478,7 +513,7 @@ public class Allocation {
             this.ladderConfig = ladderConfig;
         }
 
-        public SortedMap<String, Double> showAllocation() {
+        public Map<String, Double> showAllocation() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -656,7 +691,7 @@ public class Allocation {
         	return stateSectorMap;
         }
         
-        public SortedMap<String, Double> showAllocation(){
+        public Map<String, Double> showAllocation(){
         	return null;
 //        	return stateSectorMap;
         }
@@ -705,7 +740,7 @@ public class Allocation {
         }
 
         @Override
-        public SortedMap<String, Double> showAllocation(){
+        public Map<String, Double> showAllocation(){
         	return sectorPctMap;
         }
         
@@ -734,6 +769,7 @@ public class Allocation {
 
     private class StateConstraintEvaluator extends ConstraintEvaluator{
         SortedMap<String, Double> statePctMap = new TreeMap<String, Double>();
+        
         long accountSize = getOriginalAccountSize();
         private String limitReachedBy;
         
@@ -766,8 +802,7 @@ public class Allocation {
         }
 
         @Override
-        public SortedMap<String, Double> showAllocation(){
-  
+        public Map<String, Double> showAllocation(){
         	return statePctMap;
         }
 
@@ -827,7 +862,7 @@ public class Allocation {
         }
         
         @Override
-        public SortedMap<String, Double> showAllocation(){
+        public Map<String, Double> showAllocation(){
         	return this.showAorBelowAlloc();
         }
 
@@ -874,14 +909,15 @@ public class Allocation {
     		chosenBondPrice = chosenBond.getPrice() / 100;
     		chosenBondInvestAmt = chosenBond.getInvestAmt();
     		
-    		ArrayList<Object>summaryAlloc = new ArrayList<Object>();
+    		ArrayList<Map<String, Double>>summaryAlloc = new ArrayList<Map<String, Double>>();
     		summaryAlloc = allocatedByConstraints(consEvalList);
     		
-    		Map<String, Double> allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
-	        Map<String, Double> allocRating = ( TreeMap<String, Double> ) summaryAlloc.get(1);
-	        Map<String, Double> allocState = ( TreeMap<String, Double> ) summaryAlloc.get(2);
-	        Map<String, Double> allocSector = ( TreeMap<String, Double> ) summaryAlloc.get(3);
-	        Map<String, Object> allocStateSector = ( Map<String, Object> ) summaryAlloc.get(4);
+    		Map<String, Double> allocHealthCare = ( Map<String, Double> ) summaryAlloc.get(0);
+	        Map<String, Double> allocRating = ( Map<String, Double> ) summaryAlloc.get(1);
+	        Map<String, Double> allocState = ( Map<String, Double> ) summaryAlloc.get(2);
+	        Map<String, Double> allocSector = ( Map<String, Double> ) summaryAlloc.get(3);
+	        Map<String, HashMap<String, Double>> allocStateSector = (Map<String, HashMap<String, Double>>)  sectorsInStateAlloc(consEvalList).get(0);
+	       
 	        ladderIndex.clear();
 	        allocBond = null;
 	        stateSectorFlag = -1;
@@ -1088,7 +1124,7 @@ public class Allocation {
         }
         
         @Override
-        public SortedMap<String, Double> showAllocation(){
+        public Map<String, Double> showAllocation(){
         	return this.showHealthCareAlloc();
         }
         
@@ -1398,7 +1434,7 @@ public class Allocation {
     private class CashReducer{
     	
     	private ArrayList<Integer> buckets = getBuckets();
-        private ArrayList<Object> summaryAlloc = new ArrayList<Object>();
+        private ArrayList<Map<String, Double>> summaryAlloc = new ArrayList<Map<String, Double>>();
     	private double totalCash = 0.0;
     	private SortedMap<Integer, ArrayList<Security>>allocatedData;
     	private List<ConstraintEvaluator>consEvalList;
@@ -1410,6 +1446,7 @@ public class Allocation {
 	    private Map<String, Double> allocRating;
 	    private Map<String, Double> allocState;
 	    private Map<String, Double> allocSector;
+	    private Map<String, HashMap<String, Double>>allocSectorInState;
 		private HashMap<String, Boolean> trackOverLimit = new HashMap<String, Boolean>();
 		
     	private CashReducer(SortedMap<Integer, ArrayList<Security>>allocatedData, List<ConstraintEvaluator>consEvalList, 
@@ -1420,13 +1457,13 @@ public class Allocation {
     		this.ladderConfig = ladderConfig;
     		this.investedAmount = ladderConfig.getAccountSize();
     		this.summaryAlloc = allocatedByConstraints(consEvalList);
-    		this.allocHealthCare = ( TreeMap<String, Double> ) summaryAlloc.get(0);
-	        this.allocRating = ( TreeMap<String, Double> ) summaryAlloc.get(1);
-	        this.allocState = ( TreeMap<String, Double> ) summaryAlloc.get(2);
-	        this.allocSector = ( TreeMap<String, Double> ) summaryAlloc.get(3);
-	
+    		this.allocHealthCare = ( Map<String, Double> ) summaryAlloc.get(0);
+	        this.allocRating = ( Map<String, Double> ) summaryAlloc.get(1);
+	        this.allocState = ( Map<String, Double> ) summaryAlloc.get(2);
+	        this.allocSector = ( Map<String, Double> ) summaryAlloc.get(3);
+	        this.allocSectorInState = (Map<String, HashMap<String, Double>>) sectorsInStateAlloc(consEvalList).get(0);
     	}
-    	
+        
     	private void allocCashToNewBonds(){
     		//to allocate Cash to the allocSector
     		this.consEvalList.get(3).allocateCashSector();
@@ -1623,7 +1660,7 @@ public class Allocation {
     		
     	}
     	
-    	private ArrayList<Object> reduceCashBalance(){
+    	private ArrayList<Map<String, Double>> reduceCashBalance(){
         	
     		allocCashToNewBonds();
     		
@@ -1670,18 +1707,19 @@ public class Allocation {
     private class RatingCalculations{
     	
     	private SortedMap<Integer, ArrayList<Security>>allocatedData;
-    	private ArrayList<Object> summaryAlloc;
+    	private ArrayList<Map<String, Double>> summaryAlloc;
     	private double investedAmount;
     	private double medRating = 0.0;
     	private double avgRating = 0.0;
     	
-    	private RatingCalculations(SortedMap<Integer, ArrayList<Security>>allocatedData, double investedAmount, ArrayList<Object> summaryAlloc){
+    	private RatingCalculations(SortedMap<Integer, ArrayList<Security>>allocatedData, double investedAmount, ArrayList<Map<String, Double>> summaryAlloc){
     		this.allocatedData = allocatedData;
     		this.investedAmount = investedAmount;
     		this.summaryAlloc = summaryAlloc;
     	}
     	
-        private void calcPortAvgAndMedRating(){
+        private HashMap<String, String> calcPortAvgAndMedRating(){
+        	HashMap<String, String> ratingStats = new HashMap<String, String>();
         	ArrayList<Integer> buckets = getBuckets();
         	Rating medianRating = null;
         	Rating averageRating = null;
@@ -1711,8 +1749,10 @@ public class Allocation {
       
         	medianRating = Rating.valueOf(medRating);
         	averageRating = Rating.valueOf(avgRating);
-        	summaryAlloc.add(averageRating.toString());
-        	summaryAlloc.add(medianRating.toString());
+        	ratingStats.put("AverageRating", averageRating.toString());
+        	ratingStats.put("MedianRating", medianRating.toString());
+        	return ratingStats;
+        	
         	
         }
     	
@@ -1751,19 +1791,32 @@ public class Allocation {
     	}
     }
 
-    private ArrayList<Object>allocatedByConstraints(List<ConstraintEvaluator> consEvalList){
+    private ArrayList<Map<String, Double>>allocatedByConstraints(List<ConstraintEvaluator> consEvalList){
     	
-    	ArrayList<Object> summaryAlloc = new ArrayList<Object>();
+    	ArrayList<Map<String, Double>> summaryAlloc = new ArrayList<Map<String, Double>>();
         
     	for(ConstraintEvaluator consEval: consEvalList){
             if(consEval.showAllocation() == null){
-         	   summaryAlloc.add(consEval.showAllocationSectorInState());
+//         	   summaryAlloc.add(consEval.showAllocationSectorInState());
             }else{
          	   summaryAlloc.add(consEval.showAllocation());
             }
          }
         
         return summaryAlloc;
+    }
+    
+    private ArrayList<Map<String, HashMap<String, Double>>>sectorsInStateAlloc(List<ConstraintEvaluator> consEvalList){
+    	
+    	ArrayList<Map<String, HashMap<String, Double>>> sectorsInState = new ArrayList<Map<String, HashMap<String, Double>>>();
+        
+    	for(ConstraintEvaluator consEval: consEvalList){
+            if(consEval.showAllocation() == null){
+            	sectorsInState.add(consEval.showAllocationSectorInState());
+            }
+         }
+    	
+        return sectorsInState;
     }
     
     public ArrayList<Object> bucketsApp2(HashMap<String,String> queryMap){
@@ -1816,23 +1869,48 @@ public class Allocation {
         List<LadderBucket> ladBucketList = new ArrayList<LadderBucket>();
         generateLadder(ladBucketList, matYrSecListMap, ladderConfig, consEvalList, allocatedData);
         
-        ArrayList<Object> summaryAlloc = new ArrayList<Object>();
-        for(ConstraintEvaluator consEval: consEvalList){
-           System.out.println(consEval.toString());
-           if(consEval.showAllocation() == null){
-        	   summaryAlloc.add(consEval.showAllocationSectorInState());
-           }else{
-        	   summaryAlloc.add(consEval.showAllocation());
-           }
-        }
+        ArrayList<Object> summary = new ArrayList<Object>();
+        ArrayList<Map<String, Double>> summaryAlloc = new ArrayList<Map<String, Double>>();
         
+        summaryAlloc = allocatedByConstraints(consEvalList);
     	RatingCalculations avgAndMedRating = new RatingCalculations(allocatedData, ladderConfig.getOriginalAccountSize(), summaryAlloc);
-    	avgAndMedRating.calcPortAvgAndMedRating();
-  
-        summaryAlloc.add(allocatedData);
+    	Map<String, String> ratingStats = avgAndMedRating.calcPortAvgAndMedRating();
+    	
+        ArrayList<Map<String, Double>> sortedByAllocAmount = new ArrayList<Map<String, Double>>();
+    	summaryAlloc.forEach(alloc->{
+    		
+    				Map<String, Double>sorted = alloc.entrySet().stream()
+        			.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+        					(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    		
+        			 sortedByAllocAmount.add(sorted);
+    	});
+        	
+        ArrayList<Map<String, HashMap<String, Double>>> sortedSectorsInState = new ArrayList<Map<String, HashMap<String, Double>>>();
+        Map<String, HashMap<String, Double>> sectorAmounts = new TreeMap<String, HashMap<String, Double>>();
+        sectorsInStateAlloc(consEvalList).forEach(alloc -> {
+        	HashMap<String, Double> sortedSectors;
+        	for(Entry<String, HashMap<String, Double>> entry: alloc.entrySet()){
+        		HashMap<String, Double> test = entry.getValue();
+        		sortedSectors = test.entrySet().stream()
+        		.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+    			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+    					(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        		System.out.println(sortedSectors);
+        		sectorAmounts.put(entry.getKey(), sortedSectors);
+        		
+        	}
+        	sortedSectorsInState.add(sectorAmounts);
+        });
        
-        return summaryAlloc;
+        summary.add(sortedByAllocAmount);
+        summary.add(sortedSectorsInState);
+        summary.add(ratingStats);
+        summary.add(allocatedData);
         
+        return summary;
+       
     }
     
     private void generateLadder(List<LadderBucket> ladBucketList, SortedMap<Integer, List<Security>> matYrSecListMap, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 

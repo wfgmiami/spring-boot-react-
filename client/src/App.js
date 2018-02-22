@@ -52,13 +52,14 @@ class App extends Component {
         axios.get(url, { params: filter })
             .then( response => response.data )
             .then( munis => {
-				let allocRating = munis[1];
-				let allocState = munis[2];
-				let allocSector = munis[3];
-				let allocSectorByState = munis[4];
-				let averageRating = munis[5];
-				let medianRating = munis[6];
-				let allocatedData = munis[7];
+				let allocRating = munis[0][1];
+				let allocState = munis[0][2];
+				let allocSector = munis[0][3];
+				let allocSectorByState = munis[1][0];
+				let averageRating = munis[2]["AverageRating"];
+				let medianRating = munis[2]["MedianRating"];
+				let allocatedData = munis[3];
+				
                 let summary = { allocSector, allocState, allocRating };
                 console.log('FINAL.....summary, allocatedData----', summary, allocatedData, allocSectorByState);
 debugger;
@@ -76,86 +77,102 @@ debugger;
 		let bucketsSummary = [];
 		let rowObj = {};
 		let arrangedPortfolioSummary = [];
+		let setHeading = false;
+		let heading = null;
 		const columnFields = [ 'portfolioSummary', 'dollarAllocated', 'percentageAllocated', 'rule', 'group' ];
-
+debugger;
 		groups.forEach( alloc => {
 			let fields = Object.keys( summary[alloc] );
 			let group = alloc;
+			if( alloc === "allocSector" ){
+				heading = "SECTOR BREAKDOWN";
+				setHeading = true;
+			}else if( alloc === "allocState" ){
+				heading = "STATE BREAKDOWN";
+				setHeading = true;
+			}
+			
 			fields.forEach( field => {
-
-				rowObj[columnFields[0]] = field;
-				rowObj[columnFields[1]] = '$' + ( summary[alloc][field] ).toLocaleString();
-				rowObj[columnFields[2]] = Number( ( ( summary[alloc][field] * 1 / this.state.investedAmount *  1 ) * 100 ).toFixed(2) ) + '%';
-				rowObj[columnFields[4]] = group;
-
-				if( field === 'Health Care' ){
-					rowObj[columnFields[3]] = '<= 12%';
-				}else if( field === 'aAndBelow' ){
-					rowObj[columnFields[3]] = '<= 30%';
-				}else if( group === 'allocSector' && field !== 'Cash' ){
-					rowObj[columnFields[3]] = '<= 30%';
-				}else if( group === 'allocState' ){
-					rowObj[columnFields[3]] = '<= 20%';
-				}else if( field === 'NY' ){
-					rowObj[columnFields[3]] = '<= 20%';
-				}else if( field === 'CA' ){
-					rowObj[columnFields[3]] = '<= 20%';
-				}
-				if( rowObj[columnFields[1]] !== '$0' ){
+				if(field === "Cash") return;
+				if(setHeading){
+					rowObj[columnFields[0]] = heading;
 					bucketsSummary.push( rowObj );
+					setHeading = false;
+				}else{
+					rowObj[columnFields[0]] = field;
+					rowObj[columnFields[1]] = '$' + ( summary[alloc][field] ).toLocaleString();
+					rowObj[columnFields[2]] = Number( ( ( summary[alloc][field] * 1 / this.state.investedAmount *  1 ) * 100 ).toFixed(2) ) + '%';
+					rowObj[columnFields[4]] = group;
 
+					if( field === 'Health Care' ){
+						rowObj[columnFields[3]] = '<= 12%';
+					}else if( field === 'aAndBelow' ){
+						rowObj[columnFields[0]] = "A AND BELOW RATING";
+						rowObj[columnFields[3]] = '<= 30%';
+					}else if( group === 'allocSector' && field !== 'Cash' ){
+						rowObj[columnFields[3]] = '<= 30%';
+					}else if( group === 'allocState' ){
+						rowObj[columnFields[3]] = '<= 20%';
+					}else if( field === 'NY' ){
+						rowObj[columnFields[3]] = '<= 20%';
+					}else if( field === 'CA' ){
+						rowObj[columnFields[3]] = '<= 20%';
+					}
+					if( rowObj[columnFields[1]] !== '$0' ){
+						bucketsSummary.push( rowObj );
+					}
 				}
 				rowObj = {};
 			})
 		})
 
-		let sectorObj = 0;
-		let ratingObj = 0;
-		let stateObj = 0;
+		// let sectorObj = 0;
+		// let ratingObj = 0;
+		// let stateObj = 0;
 
-		const arrLen = bucketsSummary.length - 1;
-		for( let i = 0; i < arrLen + 1; i++ ){
-			if( bucketsSummary[i].group === 'allocSector' ){
-				sectorObj++;
-			}else if( bucketsSummary[i].group === 'allocState' ){
-				stateObj++;
-			}else if( bucketsSummary[i].group === 'allocRating') {
-				ratingObj++;
-			}
-		}
-		let stateStart = sectorObj + ratingObj - 1;
-		let stateStartRest = stateStart + 2;
-		let startRating = sectorObj - 1;
+		// const arrLen = bucketsSummary.length - 1;
+		// for( let i = 0; i < arrLen + 1; i++ ){
+		// 	if( bucketsSummary[i].group === 'allocSector' ){
+		// 		sectorObj++;
+		// 	}else if( bucketsSummary[i].group === 'allocState' ){
+		// 		stateObj++;
+		// 	}else if( bucketsSummary[i].group === 'allocRating') {
+		// 		ratingObj++;
+		// 	}
+		// }
+		// let stateStart = sectorObj + ratingObj - 1;
+		// let stateStartRest = stateStart + 2;
+		// let startRating = sectorObj - 1;
 
-		arrangedPortfolioSummary = bucketsSummary.map( ( obj, index ) => {
-			let indexedObj = {};
-			let startIndex = 1;
-			indexedObj = Object.assign( obj, { index: index } );
+		// arrangedPortfolioSummary = bucketsSummary.map( ( obj, index ) => {
+		// 	let indexedObj = {};
+		// 	let startIndex = 1;
+		// 	indexedObj = Object.assign( obj, { index: index } );
 
-			if( obj.group === 'allocSector' && obj.portfolioSummary === 'Health Care' ){
-				indexedObj = { id: startIndex, obj };
-			}else if( obj.group === 'allocSector' && obj.portfolioSummary !== 'Cash' ){
-				indexedObj = { id: ++startIndex, obj }
-			}else if( obj.group === 'allocState' && obj.portfolioSummary === 'CA' ){
-				indexedObj = { id: stateStart + 1, obj };
-			}else if( obj.group === 'allocState' && obj.portfolioSummary === 'NY' ){
-				indexedObj = { id: stateStart, obj }
-			}else if( obj.group === 'allocState' ){
-				indexedObj = { id: ++stateStartRest, obj };
-			}else if( obj.portfolioSummary === 'aAndBelow' ){
-				obj.portfolioSummary = 'A Rated and Below';
-				indexedObj = { id: startRating, obj }
-			}
-			else if( obj.portfolioSummary === 'Cash' ){
-				indexedObj = { id: 0, obj }
-			}
+		// 	if( obj.group === 'allocSector' && obj.portfolioSummary === 'Health Care' ){
+		// 		indexedObj = { id: startIndex, obj };
+		// 	}else if( obj.group === 'allocSector' && obj.portfolioSummary !== 'Cash' ){
+		// 		indexedObj = { id: ++startIndex, obj }
+		// 	}else if( obj.group === 'allocState' && obj.portfolioSummary === 'CA' ){
+		// 		indexedObj = { id: stateStart + 1, obj };
+		// 	}else if( obj.group === 'allocState' && obj.portfolioSummary === 'NY' ){
+		// 		indexedObj = { id: stateStart, obj }
+		// 	}else if( obj.group === 'allocState' ){
+		// 		indexedObj = { id: ++stateStartRest, obj };
+		// 	}else if( obj.portfolioSummary === 'aAndBelow' ){
+		// 		obj.portfolioSummary = 'A Rated and Below';
+		// 		indexedObj = { id: startRating, obj }
+		// 	}
+		// 	else if( obj.portfolioSummary === 'Cash' ){
+		// 		indexedObj = { id: 0, obj }
+		// 	}
 
-			return indexedObj;
-		})
+		// 	return indexedObj;
+		// })
 
-		console.log('..................arrangedPortfolioSummary', arrangedPortfolioSummary);
-		arrangedPortfolioSummary.sort( function(a, b){ return a.id - b.id } );
-		let result = arrangedPortfolioSummary.map( obj => bucketsSummary[obj.obj.index] );
+		// console.log('..................arrangedPortfolioSummary', arrangedPortfolioSummary);
+		// arrangedPortfolioSummary.sort( function(a, b){ return a.id - b.id } );
+		// let result = arrangedPortfolioSummary.map( obj => bucketsSummary[obj.obj.index] );
 		let obj = {};
 		let arr = [];
 
@@ -182,8 +199,8 @@ debugger;
 
 		})
 		//let result = arrangedPortfolioSummary.concat(arr);
-		return result.concat(arr);
-
+		// return result.concat(arr);
+		return bucketsSummary.concat(arr);
 	}
 
 	createColumns(){
