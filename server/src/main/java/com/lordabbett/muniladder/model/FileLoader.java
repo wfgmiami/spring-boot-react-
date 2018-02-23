@@ -92,13 +92,15 @@ public class FileLoader {
                     sec.setPrice(Double.valueOf(lineArray[pricePos].trim()));
                     sec.setCoupon(Double.valueOf(lineArray[couponPos].trim()));
                     sec.setSector(lineArray[sectorPos].trim());
-                    sec.setRating(lineArray[ratingPos].trim());
+//                    sec.setRating(lineArray[ratingPos].trim());
 //                    SecRating belowOrAboveA = Rating.valueOf(sec.getRating()).getQIndex() < 6 ? SecRating.ABOVE_A : SecRating.A_OR_BELOW;
                     sec.setSpRating("".equals(lineArray[spRatingPos].trim())?defaultRating:lineArray[spRatingPos].trim());
                     sec.setMoodyRating("".equals(lineArray[moodyRatingPos].trim())?defaultRating:lineArray[moodyRatingPos].trim());
                     sec.setFitchRating("".equals(lineArray[fitchRatingPos].trim())?defaultRating:lineArray[fitchRatingPos].trim());
                     SecRating belowOrAboveA  = Rating.getMedianRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).getQIndex() < 6
                     		? SecRating.ABOVE_A: SecRating.A_OR_BELOW;
+                    String medianRating = Rating.getMedianRating(sec.getSpRating(), sec.getMoodyRating(), sec.getFitchRating(), true, true, true).toString();
+                    sec.setRating(medianRating);
                     sec.setTwoGroupsRating(belowOrAboveA);
                     sec.setEffDur(Double.valueOf(lineArray[effDurPos].trim()));
                     sec.setModDur(Double.valueOf(lineArray[modDurPos].trim()));

@@ -59,12 +59,12 @@ class App extends Component {
 				let averageRating = munis[2]["AverageRating"];
 				let medianRating = munis[2]["MedianRating"];
 				let allocatedData = munis[3];
-				
+				let aAndBelow = allocRating['aAndBelow'];
                 let summary = { allocSector, allocState, allocRating };
                 console.log('FINAL.....summary, allocatedData----', summary, allocatedData, allocSectorByState);
 debugger;
                 const bucketsSummary = this.createSummary( summary, allocSectorByState );
-                const bucketsByRows = this.createRows( allocatedData, averageRating, medianRating );
+                const bucketsByRows = this.createRows( allocatedData, averageRating, medianRating, aAndBelow );
                 const columns = this.createColumns();
                 this.setState({ columns });
                 this.setState({ bucketsByRows });
@@ -93,7 +93,7 @@ debugger;
 			}
 			
 			fields.forEach( field => {
-				if(field === "Cash") return;
+				if(field === "Cash" || field === 'aAndBelow') return;
 				if(setHeading){
 					rowObj[columnFields[0]] = heading;
 					bucketsSummary.push( rowObj );
@@ -106,9 +106,9 @@ debugger;
 
 					if( field === 'Health Care' ){
 						rowObj[columnFields[3]] = '<= 12%';
-					}else if( field === 'aAndBelow' ){
-						rowObj[columnFields[0]] = "A AND BELOW RATING";
-						rowObj[columnFields[3]] = '<= 30%';
+					// }else if( field === 'aAndBelow' ){
+					// 	rowObj[columnFields[0]] = "A AND BELOW RATING";
+					// 	rowObj[columnFields[3]] = '<= 30%';
 					}else if( group === 'allocSector' && field !== 'Cash' ){
 						rowObj[columnFields[3]] = '<= 30%';
 					}else if( group === 'allocState' ){
@@ -126,66 +126,18 @@ debugger;
 			})
 		})
 
-		// let sectorObj = 0;
-		// let ratingObj = 0;
-		// let stateObj = 0;
-
-		// const arrLen = bucketsSummary.length - 1;
-		// for( let i = 0; i < arrLen + 1; i++ ){
-		// 	if( bucketsSummary[i].group === 'allocSector' ){
-		// 		sectorObj++;
-		// 	}else if( bucketsSummary[i].group === 'allocState' ){
-		// 		stateObj++;
-		// 	}else if( bucketsSummary[i].group === 'allocRating') {
-		// 		ratingObj++;
-		// 	}
-		// }
-		// let stateStart = sectorObj + ratingObj - 1;
-		// let stateStartRest = stateStart + 2;
-		// let startRating = sectorObj - 1;
-
-		// arrangedPortfolioSummary = bucketsSummary.map( ( obj, index ) => {
-		// 	let indexedObj = {};
-		// 	let startIndex = 1;
-		// 	indexedObj = Object.assign( obj, { index: index } );
-
-		// 	if( obj.group === 'allocSector' && obj.portfolioSummary === 'Health Care' ){
-		// 		indexedObj = { id: startIndex, obj };
-		// 	}else if( obj.group === 'allocSector' && obj.portfolioSummary !== 'Cash' ){
-		// 		indexedObj = { id: ++startIndex, obj }
-		// 	}else if( obj.group === 'allocState' && obj.portfolioSummary === 'CA' ){
-		// 		indexedObj = { id: stateStart + 1, obj };
-		// 	}else if( obj.group === 'allocState' && obj.portfolioSummary === 'NY' ){
-		// 		indexedObj = { id: stateStart, obj }
-		// 	}else if( obj.group === 'allocState' ){
-		// 		indexedObj = { id: ++stateStartRest, obj };
-		// 	}else if( obj.portfolioSummary === 'aAndBelow' ){
-		// 		obj.portfolioSummary = 'A Rated and Below';
-		// 		indexedObj = { id: startRating, obj }
-		// 	}
-		// 	else if( obj.portfolioSummary === 'Cash' ){
-		// 		indexedObj = { id: 0, obj }
-		// 	}
-
-		// 	return indexedObj;
-		// })
-
-		// console.log('..................arrangedPortfolioSummary', arrangedPortfolioSummary);
-		// arrangedPortfolioSummary.sort( function(a, b){ return a.id - b.id } );
-		// let result = arrangedPortfolioSummary.map( obj => bucketsSummary[obj.obj.index] );
 		let obj = {};
 		let arr = [];
 
 		Object.keys( allocSectorByState ).forEach( state => {
 		    let keep = false;
-			obj['portfolioSummary'] = state;
-			arr.push(obj);
-			obj = {};
+			// obj['portfolioSummary'] = state;
+			// arr.push(obj);
+			// obj = {};
 			Object.keys( allocSectorByState[state] ).forEach( sector => {
-				obj['portfolioSummary'] = sector;
+				obj['portfolioSummary'] = state + ' - ' + sector;
 				obj['dollarAllocated'] = allocSectorByState[state][sector].toLocaleString();
 				obj['percentageAllocated'] =  Number( ( ( allocSectorByState[state][sector] * 1 / this.state.investedAmount *  1 ) * 100 ).toFixed(2) ) + '%';
-//				allocSectorByState[state][sector].toLocaleString();
 				obj['rule'] = '<= 10%';
 				if(obj['dollarAllocated'] !== '0') {
 				    arr.push(obj);
@@ -195,11 +147,9 @@ debugger;
 			})
 
 			if(!keep) arr.splice(-1,1);
-
-
 		})
-		//let result = arrangedPortfolioSummary.concat(arr);
-		// return result.concat(arr);
+		heading = { portfolioSummary: "SECTORS IN STATE BREAKDOWN" };
+		arr.unshift(heading);
 		return bucketsSummary.concat(arr);
 	}
 
@@ -219,7 +169,7 @@ debugger;
 		return columns;
 	}
 
-	createRows( objBuckets, averageRating, medianRating ){
+	createRows( objBuckets, averageRating, medianRating, aAndBelow ){
 
 		const buckets = Object.keys( objBuckets );
 		const numBuckets = buckets.length;
@@ -249,7 +199,7 @@ debugger;
 		let tradeDateRange = '';
         let totalInvested = 0;
         let percentCash = 0;
-debugger;
+
 		buckets.forEach( bucket => {
 		        let bucketLen = objBuckets[bucket].length;
 				lenBucket.push( bucketLen );
@@ -344,12 +294,13 @@ debugger;
 		percentCash = Number((cashPosition / this.state.investedAmount * 100).toFixed(2)).toLocaleString();
 		cashPosition = '$' +  Number(cashPosition.toFixed(2)).toLocaleString() + " | " + percentCash + "%";
 
+		aAndBelow = Number((aAndBelow / this.state.investedAmount * 100).toFixed(2)).toLocaleString() + "%";
+		if(!aAndBelow) aAndBelow = "0%";
 		portfolioSummary.push( { avgPrice, avgCoupon, yieldToWorst: avgYtw, modifiedDuration: avgModDuration, 
 			effectiveDuration: avgEffDuration, cash: cashPosition, numberOfBonds: numBonds, portfolioSize, 
-			avgCurrentYield, averageRating, medianRating, tradeDateRange } );
+			avgCurrentYield, aAndBelow, averageRating, medianRating, tradeDateRange } );
 
 		this.setState( { portfolioSummary } );
-		// bucketsByRows.push( totalByBucket );
 		return bucketsByRows;
 	}
 

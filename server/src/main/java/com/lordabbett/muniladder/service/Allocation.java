@@ -257,7 +257,7 @@ public class Allocation {
         
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRank = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>(bucketsByRankingFinal);
         
-        generateLadder(ladBucketList, bucketsByRank, ladderConfig, consEvalList, allocatedData);
+        createLadder(ladBucketList, bucketsByRank, ladderConfig, consEvalList, allocatedData);
         
         ArrayList<Object> summary = new ArrayList<Object>();
         ArrayList<Map<String, Double>> summaryAlloc = new ArrayList<Map<String, Double>>();
@@ -876,6 +876,64 @@ public class Allocation {
         }
     }
 
+    private class HealthCareConstraintEvaluator extends ConstraintEvaluator{
+        double healthCarePct = 0;
+        long accountSize = getOriginalAccountSize();
+        private String limitReachedBy;
+        
+        private HealthCareConstraintEvaluator (LadderConfig ladderConfig){
+            super(ladderConfig);
+        }
+        
+        private String getSectorKey(Security sec){
+            return sec.getSector();
+        }
+        
+        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList){
+            if(SECTOR_HEALTHCARE.equals(getSectorKey(sec))){
+            	//healthCarePct is $amt not %
+            	if(healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 >= MAX_HEALTHCARE_PCT * accountSize / 100){
+            		limitReachedBy = "HealthCare";
+            	}
+                return healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_HEALTHCARE_PCT * accountSize / 100;
+            }
+            else{
+                return true;
+            }
+        }
+
+        public void update(Observable o, Object arg) {
+            SecurityParAmt secParAmt = (SecurityParAmt)arg;
+            if(SECTOR_HEALTHCARE.equals(getSectorKey(secParAmt.sec))){
+            	//getUpdatedSecurityPct return $amt not %
+                healthCarePct += getUpdatedSecurityPct(secParAmt);
+            }
+            super.update(o, arg);
+        }
+        
+        public TreeMap<String, Double> showHealthCareAlloc(){
+        	TreeMap<String, Double> healthCareMap = new TreeMap<String, Double>();
+        	healthCareMap.put("Health Care", healthCarePct);
+        	return healthCareMap;
+        }
+        
+        @Override
+        public Map<String, Double> showAllocation(){
+        	return this.showHealthCareAlloc();
+        }
+        
+        
+        public String toString(){
+            return "Total Healthcare %:" + PCT_FORMAT.format(healthCarePct/100);
+        }
+        
+        @Override
+        public String getLimitReachedBy() {
+        	return this.limitReachedBy;
+        }
+        
+    }
+    
     private class Optimizer {
     	
     	private Security allocBond = null;
@@ -1082,63 +1140,7 @@ public class Allocation {
     }
     
     
-    private class HealthCareConstraintEvaluator extends ConstraintEvaluator{
-        double healthCarePct = 0;
-        long accountSize = getOriginalAccountSize();
-        private String limitReachedBy;
-        
-        private HealthCareConstraintEvaluator (LadderConfig ladderConfig){
-            super(ladderConfig);
-        }
-        
-        private String getSectorKey(Security sec){
-            return sec.getSector();
-        }
-        
-        protected boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList){
-            if(SECTOR_HEALTHCARE.equals(getSectorKey(sec))){
-            	//healthCarePct is $amt not %
-            	if(healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 >= MAX_HEALTHCARE_PCT * accountSize / 100){
-            		limitReachedBy = "HealthCare";
-            	}
-                return healthCarePct + getSecurityPct(sec, parAmt) * accountSize / 100 < MAX_HEALTHCARE_PCT * accountSize / 100;
-            }
-            else{
-                return true;
-            }
-        }
-
-        public void update(Observable o, Object arg) {
-            SecurityParAmt secParAmt = (SecurityParAmt)arg;
-            if(SECTOR_HEALTHCARE.equals(getSectorKey(secParAmt.sec))){
-            	//getUpdatedSecurityPct return $amt not %
-                healthCarePct += getUpdatedSecurityPct(secParAmt);
-            }
-            super.update(o, arg);
-        }
-        
-        public TreeMap<String, Double> showHealthCareAlloc(){
-        	TreeMap<String, Double> healthCareMap = new TreeMap<String, Double>();
-        	healthCareMap.put("Health Care", healthCarePct);
-        	return healthCareMap;
-        }
-        
-        @Override
-        public Map<String, Double> showAllocation(){
-        	return this.showHealthCareAlloc();
-        }
-        
-        
-        public String toString(){
-            return "Total Healthcare %:" + PCT_FORMAT.format(healthCarePct/100);
-        }
-        
-        @Override
-        public String getLimitReachedBy() {
-        	return this.limitReachedBy;
-        }
-        
-    }
+   
 
 	private Security lookForBondInDiffRanking( LadderBucket ladderBucket, HashMap<String, List<Security>> secInBucket ){
 	
@@ -1206,7 +1208,7 @@ public class Allocation {
 		
     }
     
-    private void generateLadder(List<LadderBucket> ladBucketList,  ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRank, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
+    private void createLadder(List<LadderBucket> ladBucketList,  ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRank, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
     		SortedMap<Integer, ArrayList<Security>> allocatedData){
     	
     	ArrayList<Integer> buckets = getBuckets();  	
@@ -1357,6 +1359,7 @@ public class Allocation {
     	}while(numBuckets > 0);
 
     }
+    
     
     private HashMap<Double, String> checkLimits(Security testBond, double investedAmount, double allocatedCash, Map<String, Double> allocRating, Map<String, Double> allocSector, Map<String, Double> allocState){
     	
@@ -1744,8 +1747,8 @@ public class Allocation {
         	
         	medRating = Math.ceil(medRating);
         	avgRating = Math.ceil(avgRating);
-        	medRating = medRating == 1 ? 2 : medRating;
-        	avgRating = avgRating == 1 ? 2 : avgRating;
+//        	medRating = medRating == 1 ? 2 : medRating;
+//        	avgRating = avgRating == 1 ? 2 : avgRating;
       
         	medianRating = Rating.valueOf(medRating);
         	averageRating = Rating.valueOf(avgRating);
@@ -1912,6 +1915,7 @@ public class Allocation {
         return summary;
        
     }
+    
     
     private void generateLadder(List<LadderBucket> ladBucketList, SortedMap<Integer, List<Security>> matYrSecListMap, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
     		SortedMap<Integer, ArrayList<Security>> allocatedData){

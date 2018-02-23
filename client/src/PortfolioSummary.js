@@ -11,7 +11,7 @@ class PortfolioSummary extends React.Component{
 
 		this._columns = [
 			{ key: 'portfolioSize', name: 'Portfolio Size', resizable: true },
-			{ key: 'numberOfBonds', name: 'Number Of Bonds', resizable: true },
+			{ key: 'numberOfBonds', name: 'Total Bonds', resizable: true },
 			{ key: 'cash', name: 'Cash', resizable: true },
 			{ key: 'effectiveDuration', name: 'Effective Duration', resizable: true },
 			{ key: 'modifiedDuration', name: 'Modified Duration', resizable: true },
@@ -19,7 +19,8 @@ class PortfolioSummary extends React.Component{
 			{ key: 'avgPrice', name: 'Avg Price', resizable: true },
 			{ key: 'avgCoupon', name: 'Avg Coupon', resizable: true },
 			{ key: 'avgCurrentYield', name: 'Avg Current Yield', resizable: true },
-			{ key: 'averageRating', name: 'Average Rating', resizable: true },
+			{ key: 'aAndBelow', name: 'A & Below Rating', resizable: true },
+			{ key: 'averageRating', name: 'Avg Rating', resizable: true },
 			{ key: 'medianRating', name: 'Median Rating', resizable: true },
 			{ key: 'tradeDateRange', name: 'Trade Date Range', resizable: true },
 
