@@ -79,20 +79,29 @@ class Versiontwo extends Component {
 		let rowObj = {};
 		let arrangedPortfolioSummary = [];
 		let setHeading = false;
-		let heading = null;
+		let heading = [];
+		let idx = 0;
 		const columnFields = [ 'portfolioSummary', 'dollarAllocated', 'percentageAllocated', 'rule', 'group' ];
 debugger;
 		groups.forEach( alloc => {
 			let fields = Object.keys( summary[alloc] );
 			let group = alloc;
 			if( alloc === "allocSector" ){
-				heading = "SECTOR BREAKDOWN";
-				setHeading = true;
+				heading.push("SECTOR BREAKDOWN");
 			}else if( alloc === "allocState" ){
-				heading = "STATE BREAKDOWN";
-				setHeading = true;
+				heading.push("STATE BREAKDOWN");
+			}else if( alloc === 'allocRating' ){
+				heading.push("SECTORS IN STATE BREAKDOWN");
 			}
-			
+		});
+
+		groups.forEach( alloc => {
+			let fields = Object.keys( summary[alloc] );
+			let group = alloc;
+			rowObj[columnFields[0]] = heading[idx++];
+			bucketsSummary.push( rowObj );
+			rowObj = {};
+
 			fields.forEach( field => {
 				if(field === "Cash" || field === 'aAndBelow') return;
 				if(setHeading){

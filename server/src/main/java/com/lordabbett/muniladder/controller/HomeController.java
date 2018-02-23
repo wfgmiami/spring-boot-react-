@@ -53,6 +53,7 @@ public class HomeController {
 
       public ArrayList<Object> muniFilterApp2(@RequestParam HashMap<String, String> queryMap ){
         Allocation alloc = new Allocation();
+        alloc.initSD();
         ArrayList<Object> allocation = alloc.bucketsApp2(queryMap);
         return allocation;
 

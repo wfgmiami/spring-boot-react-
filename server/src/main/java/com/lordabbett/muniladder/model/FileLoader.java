@@ -175,13 +175,14 @@ public class FileLoader {
         }
 
         scan.close();
-
+        
         for(Security sec: secList){
             if(sec.getLastTraded() == null){
                 sec.setState(defaultState);
 //                sec.setLastTraded(DATE_FORMAT.format(defaultLastTraded));
                 sec.setLastTraded(defaultLastTraded);
             }
+            
         }
     }
 

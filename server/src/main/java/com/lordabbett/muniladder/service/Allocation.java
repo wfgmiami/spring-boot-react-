@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.Collections;
 
 @Component
 @Service
@@ -24,6 +27,7 @@ public class Allocation {
     private static final DecimalFormat PCT_FORMAT =  new DecimalFormat("#0.00%");
     private static final DecimalFormat PRICE_FORMAT =  new DecimalFormat("#0.00");
     private static final DecimalFormat ALLOC_FORMAT =  new DecimalFormat("##,##0");
+    private static final int CURRENT_YEAR = Integer.valueOf(new SimpleDateFormat("yy").format(Calendar.getInstance().getTime()));
     private static final int MIN_PRICE = 100;
     private static final int MAX_PRICE_ONE = 105;
     private static final int MAX_PRICE_OTHER = 112;
@@ -44,6 +48,7 @@ public class Allocation {
     public static final int STARTING_PAR = 70000;
     public static final int CASH_REDUCTION_PAR = 20000;
     public static final double MAX_BOND_PCT = 10;
+	public static List<SecPriority> secPriorityList = new ArrayList<SecPriority>();
     private ArrayList<Integer> buckets = new ArrayList<Integer>();  	
     private HashMap<String, Object> tempObj = new HashMap<String, Object>();
 //    private Map<String, Double> sortedByAllocAmount;
@@ -71,7 +76,7 @@ public class Allocation {
     	}
     	return parList;
     }
-    
+   
     public ArrayList<Object> buckets(HashMap<String,String> queryMap){
   
         ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRanking = new ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>>();
@@ -90,7 +95,8 @@ public class Allocation {
         }
         
         LadderConfig ladderConfig = new LadderConfig(min, max, getNumBondsPerBucket(min, max), max - min + 1, acctSize, dbAccountSize);
-      
+        initSD();
+        
         List<Security> filteredBonds = this.bonds.stream()
             .filter(this::filterBonds)
             .collect(Collectors.toList());
@@ -1845,6 +1851,8 @@ public class Allocation {
             .filter(this::filterBonds)
             .collect(Collectors.toList());
         
+//        List<Security> filteredBonds = getFilteredList(this.bonds, min, max);
+    
         Collections.sort(filteredBonds);
         
         SortedMap<Integer, List<Security>> matYrSecListMap = new TreeMap<Integer, List<Security>>(new YrToMatComparator());
@@ -2010,7 +2018,76 @@ public class Allocation {
         }
     }
     
+    public void initSD(){
+//    	try{
+        	//for debug output
+        	//buffWriter = new BufferedWriter (new FileWriter("L:\\Savinder\\Java\\LadderAllocationOutput.txt"));
+//    		buffWriter = new BufferedWriter (new FileWriter("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\LadderAllocationOutput.txt"));
+        	//get the default date
+//        	defPurchaseDate = DATE_FORMAT.parse("01/01/2001");
+        	
+        	secPriorityList.add(SecPriority.ABOVE_A_HEALTHCARE_NON_NY_CA);
+        	secPriorityList.add(SecPriority.ABOVE_A_NY);
+        	secPriorityList.add(SecPriority.ABOVE_A_CA);
+        	secPriorityList.add(SecPriority.ABOVE_A_HEALTHCARE_NY);
+        	secPriorityList.add(SecPriority.ABOVE_A_HEALTHCARE_CA);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_HEALTHCARE_NON_NY_CA);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_NY);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_CA);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_HEALTHCARE_NY);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_HEALTHCARE_CA);
+        	secPriorityList.add(SecPriority.A_OR_BELOW_NON_NY_CA);
+        	secPriorityList.add(SecPriority.ABOVE_A_NON_NY_CA);
+        	secPriorityList.add(SecPriority.NO_PRIORITY);
+//    	}
+//    	catch(IOException ioe){
+//            ioe.printStackTrace();
+//        } catch (ParseException e) {
+//    		// TODO Auto-generated catch block
+//    		e.printStackTrace();
+//    	}		
+    }
+    
+    public enum SecPriority
+	{
+	    ABOVE_A_HEALTHCARE_NY,
+	    ABOVE_A_HEALTHCARE_CA,
+	    ABOVE_A_HEALTHCARE_NON_NY_CA,
+	    ABOVE_A_NY,
+	    ABOVE_A_CA,
+	    ABOVE_A_NON_NY_CA,
+	    A_OR_BELOW_HEALTHCARE_NY,
+	    A_OR_BELOW_HEALTHCARE_CA,
+	    A_OR_BELOW_HEALTHCARE_NON_NY_CA,
+	    A_OR_BELOW_NY,
+	    A_OR_BELOW_CA,
+	    A_OR_BELOW_NON_NY_CA,
+	    NO_PRIORITY;
+	}
+    
+	private List<Security> getFilteredList(List<Security> origSecList, int minYr, int maxYr){
+		List<Security> secList = new ArrayList<Security>();
+    	for(Security sec: origSecList){
+    		if(sec.getYearsToMaturity() >= minYr && sec.getYearsToMaturity() <=  + maxYr){
+    			//for ranges that start with 1 like 1-5 etc, max price allowed is 105
+    			if(minYr == 1){
+    				if(sec.getPrice() <= MAX_PRICE_ONE){
+    					secList.add(sec);
+    				}
+    			}
+    			else{
+    				if(sec.getPrice() <= MAX_PRICE_OTHER){
+    					secList.add(sec);
+    				}
+    			}
+    		}
+    	}
+		return secList;
+	}
+    
 }
+
+
 
 
 

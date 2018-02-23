@@ -2,6 +2,7 @@ package com.lordabbett.muniladder.model;
 
 import com.lordabbett.muniladder.service.Allocation;
 
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -33,50 +34,49 @@ public class Security implements Comparable{
     private double modDur;
     private double yieldToWorst;
   
-    
     public Security(){}
 
-    public SecPriority getPriority(){
+    public Allocation.SecPriority getPriority(){
         if(!FileLoader.getDefaultDate().equals(lastTraded)) {
             if (FileLoader.SecRating.ABOVE_A == twoGroupsRating) {
                 if (Allocation.SECTOR_HEALTHCARE.equals(sector)) {
                     if (Allocation.STATE_NY.equals(state)) {
-                        return SecPriority.ABOVE_A_HEALTHCARE_NY;
+                        return Allocation.SecPriority.ABOVE_A_HEALTHCARE_NY;
                     } else if (Allocation.STATE_CA.equals(state)) {
-                        return SecPriority.ABOVE_A_HEALTHCARE_CA;
+                        return Allocation.SecPriority.ABOVE_A_HEALTHCARE_CA;
                     } else {
-                        return SecPriority.ABOVE_A_HEALTHCARE_NON_NY_CA;
+                        return Allocation.SecPriority.ABOVE_A_HEALTHCARE_NON_NY_CA;
                     }
                 } else {
                     if (Allocation.STATE_NY.equals(state)) {
-                        return SecPriority.ABOVE_A_NY;
+                        return Allocation.SecPriority.ABOVE_A_NY;
                     } else if (Allocation.STATE_CA.equals(state)) {
-                        return SecPriority.ABOVE_A_CA;
+                        return Allocation.SecPriority.ABOVE_A_CA;
                     } else {
-                        return SecPriority.ABOVE_A_NON_NY_CA;
+                        return Allocation.SecPriority.ABOVE_A_NON_NY_CA;
                     }
                 }
             } else {
                 if (Allocation.SECTOR_HEALTHCARE.equals(sector)) {
                     if (Allocation.STATE_NY.equals(state)) {
-                        return SecPriority.A_OR_BELOW_HEALTHCARE_NY;
+                        return Allocation.SecPriority.A_OR_BELOW_HEALTHCARE_NY;
                     } else if (Allocation.STATE_CA.equals(state)) {
-                        return SecPriority.A_OR_BELOW_HEALTHCARE_CA;
+                        return Allocation.SecPriority.A_OR_BELOW_HEALTHCARE_CA;
                     } else {
-                        return SecPriority.A_OR_BELOW_HEALTHCARE_NON_NY_CA;
+                        return Allocation.SecPriority.A_OR_BELOW_HEALTHCARE_NON_NY_CA;
                     }
                 } else {
                     if (Allocation.STATE_NY.equals(state)) {
-                        return SecPriority.A_OR_BELOW_NY;
+                        return Allocation.SecPriority.A_OR_BELOW_NY;
                     } else if (Allocation.STATE_CA.equals(state)) {
-                        return SecPriority.A_OR_BELOW_CA;
+                        return Allocation.SecPriority.A_OR_BELOW_CA;
                     } else {
-                        return SecPriority.A_OR_BELOW_NON_NY_CA;
+                        return Allocation.SecPriority.A_OR_BELOW_NON_NY_CA;
                     }
                 }
             }
         }else{
-            return SecPriority.NO_PRIORITY;
+            return Allocation.SecPriority.NO_PRIORITY;
         }
     }
  
@@ -84,36 +84,35 @@ public class Security implements Comparable{
 //    	return ((Security)o).lastTraded.compareTo(lastTraded);
 //    }
     
-    public int compareTo(Object o){
-    	 
-	     int secSortOrder = getPriority().ordinal();
-	     int sortOrder = ((Security)o).getPriority().ordinal();
-		 if(secSortOrder > sortOrder){
-			 return 1;
-		 }else if(secSortOrder < sortOrder){
-		     return -1;
-		 }else{
-		     return ((Security)o).lastTraded.compareTo(lastTraded);
-		 }
-    	 
-    }
+//    public int compareTo(Object o){
+//    	 
+//	     int secSortOrder = getPriority().ordinal();
+//	     int sortOrder = ((Security)o).getPriority().ordinal();
+//		 if(secSortOrder > sortOrder){
+//			 return 1;
+//		 }else if(secSortOrder < sortOrder){
+//		     return -1;
+//		 }else{
+//		     return ((Security)o).lastTraded.compareTo(lastTraded);
+//		 }
+//    	 
+//    }
     
-    private enum SecPriority     {
-    	ABOVE_A_HEALTHCARE_NON_NY_CA,
-        ABOVE_A_HEALTHCARE_NY,
-        ABOVE_A_HEALTHCARE_CA,
-//        ABOVE_A_HEALTHCARE_NON_NY_CA,
-        ABOVE_A_NY,
-        ABOVE_A_CA,
-        ABOVE_A_NON_NY_CA,
-        A_OR_BELOW_HEALTHCARE_NY,
-        A_OR_BELOW_HEALTHCARE_CA,
-        A_OR_BELOW_HEALTHCARE_NON_NY_CA,
-        A_OR_BELOW_NY,
-        A_OR_BELOW_CA,
-        A_OR_BELOW_NON_NY_CA,
-        NO_PRIORITY;
-    }
+    public int compareTo(Object o) {
+    
+	 	int secSortOrder = Allocation.secPriorityList.indexOf(getPriority());
+		int sortOrder = Allocation.secPriorityList.indexOf(((Security)o).getPriority());
+		if(secSortOrder > sortOrder){
+			return 1;
+		}
+		else if(secSortOrder < sortOrder){
+			return -1;
+		}
+		else{
+			return ((Security)o).lastTraded.compareTo(lastTraded);
+		}
+	
+	} 
 
 }
 
