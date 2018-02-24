@@ -32,8 +32,8 @@ class Versiontwo extends Component {
 
     componentDidMount(){
 //        fetch("http://localhost:8080/app2")
-       fetch("http://10.3.160.199:8080/app2")
-        // fetch("http://192.168.1.126:8080/app2")
+    //    fetch("http://10.3.160.199:8080/app2")
+        fetch("http://192.168.1.126:8080/app2")
         .then( response => response.json() )
         .then( data => this.setState( { munis: data } ) )
     }
@@ -44,8 +44,8 @@ class Versiontwo extends Component {
 
     createLadder( investedAmount ){
 //        let url = 'http://localhost:8080/app2/buckets';
-       let url = "http://10.3.160.199:8080/app2/buckets";
-        // let url = "http://192.168.1.126:8080/app2/buckets";
+    //    let url = "http://10.3.160.199:8080/app2/buckets";
+        let url = "http://192.168.1.126:8080/app2/buckets";
 //        console.log('.............this.state', this.state)
         this.setState({ investedAmount });
         let filter = Object.assign( {}, this.state.maturityRange, { investedAmount });

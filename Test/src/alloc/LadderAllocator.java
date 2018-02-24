@@ -187,6 +187,7 @@ public class LadderAllocator {
 		List<Security> secList = matYrSecListMap.get(matYr);
 		long totDollarRoundedAmt = 0;
 		int numBondsSelected = 0;
+		
 		for(Security sec: secList){
 			//get the raw amt
 			long rawParAmt = (long)(ladderConfig.getLatestAccountSize()*PAR_PRICE/ladderConfig.getLatestMaturityRange()/sec.price/ladderConfig.numBondsPerBucket);
@@ -284,7 +285,7 @@ public class LadderAllocator {
 		try{
         	//for debug output
         	//buffWriter = new BufferedWriter (new FileWriter("L:\\Savinder\\Java\\LadderAllocationOutput.txt"));
-			buffWriter = new BufferedWriter (new FileWriter("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\LadderAllocationOutput.txt"));
+//			buffWriter = new BufferedWriter (new FileWriter("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\LadderAllocationOutput.txt"));
         	//get the default date
         	defPurchaseDate = DATE_FORMAT.parse("01/01/2001");
         	
@@ -301,9 +302,9 @@ public class LadderAllocator {
         	secPriorityList.add(SecPriority.A_OR_BELOW_NON_NY_CA);
         	secPriorityList.add(SecPriority.ABOVE_A_NON_NY_CA);
         	secPriorityList.add(SecPriority.NO_PRIORITY);
-		}
-		catch(IOException ioe){
-            ioe.printStackTrace();
+//		}
+//		catch(IOException ioe){
+//            ioe.printStackTrace();
         } catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -330,7 +331,8 @@ public class LadderAllocator {
 		Map<String, Security> cusipSecMap = new HashMap<String, LadderAllocator.Security>();
 		BufferedReader buffReader = null;
 		try{
-        	buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\Security_SMF_20180124.csv"));
+//        	buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\Security_SMF_20180124.csv"));
+        	buffReader = new BufferedReader (new FileReader("./Security_SMF_20180124.csv"));
             String line = buffReader.readLine();
     		int cusipCtr = -1;
     		int sectorCtr = -1;
@@ -419,7 +421,8 @@ public class LadderAllocator {
 	        }
 		}
 		try{
-        	buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\SMASecurity_20180124.csv"));
+//        	buffReader = new BufferedReader (new FileReader("\\\\tfiappsq1-jitv\\DataShare\\MuniLadder\\SMASecurity_20180124.csv"));
+        	buffReader = new BufferedReader (new FileReader( "./SMASecurity_20180124.csv"));
         	DateFormat df = new SimpleDateFormat("dd-MMM-yy");
             String line = buffReader.readLine();
     		int cusipCtr = -1;

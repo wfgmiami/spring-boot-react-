@@ -51,7 +51,6 @@ public class Allocation {
 	public static List<SecPriority> secPriorityList = new ArrayList<SecPriority>();
     private ArrayList<Integer> buckets = new ArrayList<Integer>();  	
     private HashMap<String, Object> tempObj = new HashMap<String, Object>();
-//    private Map<String, Double> sortedByAllocAmount;
     private boolean debug = true;
     
     List<Security> bonds = new FileLoader().getSecList();
@@ -314,7 +313,6 @@ public class Allocation {
 
     }
     
-
     private class LadderBucket extends Observable{
         private int matYr;
         private int currentRankIndex = 0;
@@ -493,7 +491,6 @@ public class Allocation {
         return yearsToMat <= max && yearsToMat >= min && price <= MAX_PRICE_OTHER;
     }
 
-    
     private List<ConstraintEvaluator> createConstraintEvaluatorsList(LadderConfig ladderConfig){
 
         List<ConstraintEvaluator> consEvalList = new ArrayList<ConstraintEvaluator>();
@@ -505,7 +502,6 @@ public class Allocation {
         consEvalList.add(new StateSectorConstraintEvaluator(ladderConfig));
         return consEvalList;
     }
-    
     
     private abstract class ConstraintEvaluator implements Observer{
         private Map<Security, SecurityParAmt> secParAmtMap = new HashMap<Security, SecurityParAmt>();
@@ -567,11 +563,9 @@ public class Allocation {
             }
         }
 
-
         protected abstract boolean evaluate (Security sec, long parAmt, List<LadderBucket> ladderBucketList);
     }
 
-    
     private class SecurityParAmt implements Comparable{
         private Security sec;
         private long rawParAmt;
@@ -616,29 +610,29 @@ public class Allocation {
          * @param o Rating object
          * @return -1, 0, 1 if less than, equal to or greater
          */
-//        public int compareTo(Object o) {
-//            if (getDollarAmount() < ((SecurityParAmt)o).getDollarAmount()) {
-//                return -1;
-//            }
-//            else if (getDollarAmount() > ((SecurityParAmt)o).getDollarAmount()) {
-//                return 1;
-//            }
-//            else {
-//                return 0;
-//            }
-//        }
-
         public int compareTo(Object o) {
-            if (getRank() < ((SecurityParAmt)o).getRank()) {
+            if (getDollarAmount() < ((SecurityParAmt)o).getDollarAmount()) {
                 return -1;
             }
-            else if (getRank() > ((SecurityParAmt)o).getRank()) {
+            else if (getDollarAmount() > ((SecurityParAmt)o).getDollarAmount()) {
                 return 1;
             }
             else {
                 return 0;
             }
         }
+
+//        public int compareTo(Object o) {
+//            if (getRank() < ((SecurityParAmt)o).getRank()) {
+//                return -1;
+//            }
+//            else if (getRank() > ((SecurityParAmt)o).getRank()) {
+//                return 1;
+//            }
+//            else {
+//                return 0;
+//            }
+//        }
         
         public String toString(){
             return "Dollar Amount: " + ALLOC_FORMAT.format(getDollarAmount()) +
@@ -825,7 +819,6 @@ public class Allocation {
         	return this.limitReachedBy;
         }
     }
-
     
     private class AOrBelowConstraintEvaluator extends ConstraintEvaluator{
         double aOrBelowPct = 0;
@@ -1144,9 +1137,6 @@ public class Allocation {
         }
     	
     }
-    
-    
-   
 
 	private Security lookForBondInDiffRanking( LadderBucket ladderBucket, HashMap<String, List<Security>> secInBucket ){
 	
@@ -1365,8 +1355,7 @@ public class Allocation {
     	}while(numBuckets > 0);
 
     }
-    
-    
+       
     private HashMap<Double, String> checkLimits(Security testBond, double investedAmount, double allocatedCash, Map<String, Double> allocRating, Map<String, Double> allocSector, Map<String, Double> allocState){
     	
 		double maxHealthCare = MAX_HEALTHCARE_PCT * investedAmount / 100;
@@ -1439,7 +1428,6 @@ public class Allocation {
 		return allocationLimitType;
     }
     
-    
     private class CashReducer{
     	
     	private ArrayList<Integer> buckets = getBuckets();
@@ -1450,7 +1438,8 @@ public class Allocation {
     	private ArrayList<TreeMap<Integer,HashMap<String, List<Security>>>> bucketsByRankingFinal;
     	private LadderConfig ladderConfig;
     	private double investedAmount;
-    	private double limitOnCashMove = 0.01 * investedAmount;
+    	private double limitOnCashMove;
+    	private boolean flagCashDistribution = true;
 		private Map<String, Double> allocHealthCare;
 	    private Map<String, Double> allocRating;
 	    private Map<String, Double> allocState;
@@ -1465,6 +1454,7 @@ public class Allocation {
     		this.bucketsByRankingFinal = bucketsByRankingFinal;
     		this.ladderConfig = ladderConfig;
     		this.investedAmount = ladderConfig.getAccountSize();
+    		this.limitOnCashMove = 0.01 * investedAmount;
     		this.summaryAlloc = allocatedByConstraints(consEvalList);
     		this.allocHealthCare = ( Map<String, Double> ) summaryAlloc.get(0);
 	        this.allocRating = ( Map<String, Double> ) summaryAlloc.get(1);
@@ -1584,6 +1574,7 @@ public class Allocation {
     		double allocatedCash = bucket.get(bucketLength).getInvestAmt();
     		boolean allocCheck = false;
     		
+    		
     		for( int i = 0; i < bucketLength; i++ ){
 
 				double price = bucket.get(i).getPrice();
@@ -1602,7 +1593,7 @@ public class Allocation {
 				int checkIncrements = 1;
 				boolean maxIncrement = false;
 				boolean stopIncrease = false;
-
+				
 				if( bondNum > 0 ){
 					do{
 
@@ -1658,7 +1649,8 @@ public class Allocation {
 				}		
 			}
 			
-				allocatedCash = bucket.get(bucketLength).getInvestAmt();
+    		if(flagCashDistribution) {
+    			allocatedCash = bucket.get(bucketLength).getInvestAmt();
 				if(allocatedCash > limitOnCashMove) {
 					totalCash += limitOnCashMove;
 					bucket.get(bucketLength).setInvestAmt(allocatedCash - limitOnCashMove);
@@ -1666,12 +1658,16 @@ public class Allocation {
 					totalCash += allocatedCash;
 					bucket.get(bucketLength).setInvestAmt(0.0);
 				}
+				
+    		}
+			
     		
     	}
     	
     	private ArrayList<Map<String, Double>> reduceCashBalance(){
         	
     		allocCashToNewBonds();
+    		
     		
         	do {
         		buckets.forEach( bucketNumber -> {
@@ -1690,6 +1686,8 @@ public class Allocation {
             			}
             		}    		
         		});
+        		//above distributes cash only to buckets with 0 cash. Below allocate cash to buckets that have already some cash after
+        		//the first redistribution of cash
         		if(totalCash > 0) {
         			double cashToAlloc = totalCash / buckets.size();
         			buckets.forEach( bucketNumber -> {
@@ -1702,6 +1700,7 @@ public class Allocation {
         		}
         	}while(totalCash > 1.0);
         	
+        	flagCashDistribution = false;
         	buckets.forEach( bucketNumber -> {
         		ArrayList<Security> bucket = allocatedData.get(bucketNumber);
         		allocCashToExistingBonds(bucket);
@@ -1711,8 +1710,7 @@ public class Allocation {
         }
     	
     }
-    
-    
+
     private class RatingCalculations{
     	
     	private SortedMap<Integer, ArrayList<Security>>allocatedData;
@@ -1753,8 +1751,6 @@ public class Allocation {
         	
         	medRating = Math.ceil(medRating);
         	avgRating = Math.ceil(avgRating);
-//        	medRating = medRating == 1 ? 2 : medRating;
-//        	avgRating = avgRating == 1 ? 2 : avgRating;
       
         	medianRating = Rating.valueOf(medRating);
         	averageRating = Rating.valueOf(avgRating);
@@ -1762,26 +1758,20 @@ public class Allocation {
         	ratingStats.put("MedianRating", medianRating.toString());
         	return ratingStats;
         	
-        	
         }
     	
     }
-  
 
-    
     private String evaluateConstraints(List<ConstraintEvaluator> consEvalList, Security sec, long parAmt, List<LadderBucket> ladderBucketList){
         String result = null;
     	for(ConstraintEvaluator consEval: consEvalList){
             boolean constraintPassed = consEval.evaluate(sec, parAmt, ladderBucketList);
             if(!constraintPassed){
             	return consEval.getLimitReachedBy();
-                //return false;
             }
         }
         return result;
-        //return true;
     }
-    
     
     private int getNumBondsPerBucket(int minYr, int maxYr){
         int matRange = maxYr - minYr + 1;
@@ -1828,6 +1818,7 @@ public class Allocation {
         return sectorsInState;
     }
     
+    
     public ArrayList<Object> bucketsApp2(HashMap<String,String> queryMap){
     	HashMap<String, List<Security>> groupedByRanking = new HashMap<String, List<Security>>();
     	TreeMap<Integer, HashMap<String, List<Security>>> groupedByBucket = new TreeMap<Integer, HashMap<String,List<Security>>>();
@@ -1850,8 +1841,6 @@ public class Allocation {
         List<Security> filteredBonds = this.bonds.stream()
             .filter(this::filterBonds)
             .collect(Collectors.toList());
-        
-//        List<Security> filteredBonds = getFilteredList(this.bonds, min, max);
     
         Collections.sort(filteredBonds);
         
@@ -1923,7 +1912,6 @@ public class Allocation {
         return summary;
        
     }
-    
     
     private void generateLadder(List<LadderBucket> ladBucketList, SortedMap<Integer, List<Security>> matYrSecListMap, LadderConfig ladderConfig, List<ConstraintEvaluator> consEvalList, 
     		SortedMap<Integer, ArrayList<Security>> allocatedData){
@@ -2000,6 +1988,7 @@ public class Allocation {
             }
         }
        
+        Collections.sort(secParAmtList);
         for(SecurityParAmt secParAmt : secParAmtList){
         	
         	Double investedAmt = secParAmt.getDollarAmount();
@@ -2065,25 +2054,6 @@ public class Allocation {
 	    NO_PRIORITY;
 	}
     
-	private List<Security> getFilteredList(List<Security> origSecList, int minYr, int maxYr){
-		List<Security> secList = new ArrayList<Security>();
-    	for(Security sec: origSecList){
-    		if(sec.getYearsToMaturity() >= minYr && sec.getYearsToMaturity() <=  + maxYr){
-    			//for ranges that start with 1 like 1-5 etc, max price allowed is 105
-    			if(minYr == 1){
-    				if(sec.getPrice() <= MAX_PRICE_ONE){
-    					secList.add(sec);
-    				}
-    			}
-    			else{
-    				if(sec.getPrice() <= MAX_PRICE_OTHER){
-    					secList.add(sec);
-    				}
-    			}
-    		}
-    	}
-		return secList;
-	}
     
 }
 
