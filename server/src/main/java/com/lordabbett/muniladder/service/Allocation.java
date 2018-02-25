@@ -1166,8 +1166,9 @@ public class Allocation {
 		long allocSize = STARTING_PAR;
 		int adjMinPar = MIN_PAR;
 		
-		if( Math.floor( bucketSize / allocSize ) < 2 ){
-//			allocSize = MIN_PAR;
+		//if bucketMoney/70k < 2 or 70k*price > 10% then reduce alloc size to 20k 
+		//in order to fill the buckets with bonds not leave in cash
+		if( Math.floor(bucketSize / allocSize) < 2 || allocSize * chosenBond.getPrice() / 100 > maxBondSize){
 			adjMinPar = CASH_REDUCTION_PAR;
 			allocSize = (long) (Math.floor( investedAmount / ladderConfig.getOriginalMaturityRange() / MIN_INCREMENT ) * MIN_INCREMENT);
 		}
@@ -1263,7 +1264,7 @@ public class Allocation {
 	    	        	secParAmt.sec.setInvestAmt(investedAmt);
 	    	            bucketBonds.add(secParAmt.sec);         
 	    	        }
-	        		
+	    	     // duplicate code - remove to separate function
 					Security cashSecurity = new Security();
 					cashSecurity.setCusip("Cash");
 					cashSecurity.setInvestAmt(leftInCash);
@@ -1278,9 +1279,20 @@ public class Allocation {
 			        roundedParAmt = Math.round((double)(rawParAmt/MIN_INCREMENT))*MIN_INCREMENT;
 			        String limitReachedBy = evaluateConstraints(consEvalList, chosenBond, roundedParAmt, ladBucketList);
 			        		
-		            if( limitReachedBy == null ){
+		            if( limitReachedBy == null && rawParAmt != 0){
 		                ladderBucket.addSecurityParAmount(new SecurityParAmt(chosenBond, rawParAmt, roundedParAmt));
-		                ladderBucket.increaseBondIndex();                
+		                ladderBucket.increaseBondIndex();        
+		            }else if(rawParAmt == 0) {
+		            	// duplicate code - remove to separate function
+		            	leftInCash =  totDollarBucketAmt - ladderBucket.getLadderDollarAmt();	
+		            	Security cashSecurity = new Security();
+						cashSecurity.setCusip("Cash");
+						cashSecurity.setInvestAmt(leftInCash);
+						bucketBonds.add(cashSecurity);   
+						allocatedData.put(bucketMatYr, bucketBonds);
+						bucketsByRank.remove(bucketIndex);
+						buckets.remove(bucketIndex);
+						ladBucketList.remove(bucketIndex);
 
 		            }else {
 		            
@@ -1322,7 +1334,8 @@ public class Allocation {
 		    	        	secParAmt.sec.setInvestAmt(investedAmt);
 		    	            bucketBonds.add(secParAmt.sec);         
 		    	        }
-		        		
+		    	        
+		    	     // duplicate code - remove to separate function
 						Security cashSecurity = new Security();
 						cashSecurity.setCusip("Cash");
 						cashSecurity.setInvestAmt(leftInCash);
@@ -1356,13 +1369,15 @@ public class Allocation {
 
     }
        
-    private HashMap<Double, String> checkLimits(Security testBond, double investedAmount, double allocatedCash, Map<String, Double> allocRating, Map<String, Double> allocSector, Map<String, Double> allocState){
+    private HashMap<Double, String> checkLimits(Security testBond, double investedAmount, double allocatedCash, Map<String, Double> allocRating, Map<String, Double> allocSector, 
+    		Map<String, Double> allocState, Map<String, HashMap<String, Double>>allocSectorInState){
     	
 		double maxHealthCare = MAX_HEALTHCARE_PCT * investedAmount / 100;
 		double maxSector = MAX_SECTOR_PCT * investedAmount / 100;
 		double maxNYState = MAX_STATE_PCT * investedAmount / 100;
 		double maxCAState = MAX_STATE_PCT * investedAmount / 100;
 		double maxState = MAX_STATE_PCT * investedAmount / 100;
+		double maxStateSector = MAX_SECTOR_STATE_PCT * investedAmount / 100;
 		double maxAandBelow = MAX_A_OR_BELOW_PCT * investedAmount / 100;
 		double allocationLimit = 0.0;
 	    double leftRoom = 0.0;
@@ -1378,9 +1393,22 @@ public class Allocation {
     	if(!allocState.containsKey(state)){
     		allocState.put(state, 0.0);
     	}
-    	
+   
+      	if(allocSectorInState.containsKey(state)){
+      		if(!allocSectorInState.get(state).containsKey(sector)) {
+      			HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+        		sectorValue.put(sector, 0.0);
+        		allocSectorInState.put(state, sectorValue);
+      		}
+    	}else{
+    		HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+    		sectorValue.put(sector, 0.0);
+    		allocSectorInState.put(state, sectorValue);
+    	}
+      	
     	String limitType = sector;
 		
+    	//check limit for Sector and then compare to limit for State and then to limit for Sector in State
 		allocationLimit = maxSector - allocSector.get(sector);
 
 		leftRoom = maxState -  allocState.get(state);
@@ -1388,7 +1416,13 @@ public class Allocation {
 			allocationLimit = leftRoom;
 			limitType = state;
 		}
-
+		
+		leftRoom = maxStateSector - allocSectorInState.get(state).get(sector);
+		if( allocationLimit > leftRoom ){
+			allocationLimit = leftRoom;
+			limitType = "sectorInState";
+		}
+		
 		if( testBond.getRank().equals("HealthCare") ){
 				leftRoom = maxHealthCare - allocSector.get(sector);
 				if( allocationLimit > leftRoom ){
@@ -1439,7 +1473,7 @@ public class Allocation {
     	private LadderConfig ladderConfig;
     	private double investedAmount;
     	private double limitOnCashMove;
-    	private boolean flagCashDistribution = true;
+    	private String shuffleBuckets = null;
 		private Map<String, Double> allocHealthCare;
 	    private Map<String, Double> allocRating;
 	    private Map<String, Double> allocState;
@@ -1454,6 +1488,7 @@ public class Allocation {
     		this.bucketsByRankingFinal = bucketsByRankingFinal;
     		this.ladderConfig = ladderConfig;
     		this.investedAmount = ladderConfig.getAccountSize();
+    		//0.005 for 1% max deviation between lowest and highest allocated bucket
     		this.limitOnCashMove = 0.01 * investedAmount;
     		this.summaryAlloc = allocatedByConstraints(consEvalList);
     		this.allocHealthCare = ( Map<String, Double> ) summaryAlloc.get(0);
@@ -1464,7 +1499,7 @@ public class Allocation {
     	}
         
     	private void allocCashToNewBonds(){
-    		//to allocate Cash to the allocSector
+    		//Allocates Total Cash in the Portfolio to the allocSector
     		this.consEvalList.get(3).allocateCashSector();
     		
     		buckets.forEach( bucketNumber -> {
@@ -1499,7 +1534,9 @@ public class Allocation {
     						double price = testBond.getPrice();
     						String sector = testBond.getSector();
     						String state = testBond.getState();
-    						allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
+    						
+    						//Checking if the amount will fall within limits for 1.Rating; 2.Sector/incl Health Care/ 3.State(incl NY, CA/ 4.Sector in State
+    						allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState, allocSectorInState);
     						allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
     						
     						minIncrementToAllocate = ( allocatedCash ) / ( CASH_REDUCTION_PAR * ( price * 1 / 100 ) );
@@ -1549,9 +1586,13 @@ public class Allocation {
     							}else{
     								allocSector.put(sector, minIncrementToAllocate);
     							}
-    							
+    							   							
+    							double currentAllocSectorInState = allocSectorInState.get(state).get(sector);
+					    		HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+					    		sectorValue.put(sector, currentAllocSectorInState + minIncrementToAllocate);
+					    		allocSectorInState.put(state, sectorValue);
+    					     	
     							double currentAllocCash = allocSector.get("Cash") - allocatedCash;
-//    							allocSector.put("Cash", currentAllocCash);
     							allocatedCash = bucket.get(bucketLength).getInvestAmt();
     							allocSector.put("Cash", currentAllocCash + allocatedCash);
     							
@@ -1583,7 +1624,8 @@ public class Allocation {
 				String limitType = sector;
 				
 				Security testBond = bucket.get(i);
-				HashMap<Double, String> allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState);
+				//Checking if the amount will fall within limits for 1.Rating; 2.Sector/incl Health Care/ 3.State(incl NY, CA/ 4.Sector in State
+				HashMap<Double, String> allocationLimitType = checkLimits(testBond, investedAmount, allocatedCash, allocRating, allocSector, allocState, allocSectorInState);
 				double allocationLimit = (double) allocationLimitType.keySet().toArray()[0];
 				limitType = allocationLimitType.values().toString();
 				
@@ -1642,6 +1684,11 @@ public class Allocation {
 						allocRating.put("aAndBelow", currentAllocRating + minIncrementToAllocate);
 					}
 					
+					double currentAllocSectorInState = allocSectorInState.get(state).get(sector);
+		    		HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+		    		sectorValue.put(sector, currentAllocSectorInState + minIncrementToAllocate);
+		    		allocSectorInState.put(state, sectorValue);
+		    		
 					double currentAllocCash = allocSector.get("Cash") - allocatedCash;
 					allocatedCash = bucket.get(bucketLength).getInvestAmt();
 					allocSector.put("Cash", currentAllocCash + allocatedCash);
@@ -1649,7 +1696,7 @@ public class Allocation {
 				}		
 			}
 			
-    		if(flagCashDistribution) {
+    		if(!(shuffleBuckets == "doneCashRealloc") && buckets.size() > 1){
     			allocatedCash = bucket.get(bucketLength).getInvestAmt();
 				if(allocatedCash > limitOnCashMove) {
 					totalCash += limitOnCashMove;
@@ -1657,10 +1704,8 @@ public class Allocation {
 				}else {
 					totalCash += allocatedCash;
 					bucket.get(bucketLength).setInvestAmt(0.0);
-				}
-				
+				}	
     		}
-			
     		
     	}
     	
@@ -1668,44 +1713,72 @@ public class Allocation {
         	
     		allocCashToNewBonds();
     		
+    		while(!(shuffleBuckets == "doneCashRealloc") && buckets.size() > 1){
+    			do {
+            		buckets.forEach( bucketNumber -> {
+            	
+    	        		ArrayList<Security>bucket = allocatedData.get(bucketNumber);
+    	        		int bucketLength = bucket.size() - 1;
+    	        		double cashLeft = bucket.get(bucketLength).getInvestAmt();
+            		
+            			if(cashLeft == 0.0) {
+                			if(totalCash >= limitOnCashMove) {
+                				bucket.get(bucketLength).setInvestAmt(limitOnCashMove);
+                				totalCash -= limitOnCashMove;
+                			}else {
+                				bucket.get(bucketLength).setInvestAmt(totalCash);
+                				totalCash = 0.0;
+                			}
+                		}    		
+            		});
+            		//above distributes cash only to buckets with 0 cash. Below allocate cash to buckets that have already some cash after
+            		//the first redistribution of cash
+            		if(totalCash > 0) {
+            			double cashToAlloc = totalCash / buckets.size();
+            			buckets.forEach( bucketNumber -> {
+            				ArrayList<Security>bucket = allocatedData.get(bucketNumber);
+            				int bucketLength = bucket.size() - 1;
+            				double currentCash = bucket.get(bucketLength).getInvestAmt();
+            				bucket.get(bucketLength).setInvestAmt(currentCash + cashToAlloc);
+            				totalCash -= cashToAlloc;
+            			});
+            		}
+            	}while(totalCash > 1.0);
+            
+            	if(shuffleBuckets == "reverse") {
+            		Collections.reverse(buckets);
+            		shuffleBuckets = "middleBucketFirst";
+            	}else if(shuffleBuckets == "middleBucketFirst") {
+            		ArrayList<Integer>newBuckets = new ArrayList<Integer>();
+            		Collections.reverse(buckets);
+            		int middleIdx = (int)Math.floor(buckets.size()/2);
+            		int minIdx = 0;
+            		int maxIdx = buckets.size() - 1;
+            		int minReached = middleIdx - 1;
+            		int maxReached = middleIdx + 1;
+            		newBuckets.add(buckets.get(middleIdx));
+            		
+            		while(minReached >= minIdx || maxReached <= maxIdx) {
+            			if(minReached >= minIdx) newBuckets.add(buckets.get(minReached));
+            			if(maxReached <= maxIdx) newBuckets.add(buckets.get(maxReached));
+            			minReached--;
+            			maxReached++;
+            		}
+            		
+            		buckets.clear();
+            		buckets = newBuckets;
+            		shuffleBuckets = "doneCashRealloc";
+            	}else {
+            		shuffleBuckets = "reverse";
+            	};
+            	
+            	buckets.forEach( bucketNumber -> {
+            		ArrayList<Security> bucket = allocatedData.get(bucketNumber);
+            		allocCashToExistingBonds(bucket);
+            	});
+    			
+    		}
     		
-        	do {
-        		buckets.forEach( bucketNumber -> {
-        	
-	        		ArrayList<Security>bucket = allocatedData.get(bucketNumber);
-	        		int bucketLength = bucket.size() - 1;
-	        		double cashLeft = bucket.get(bucketLength).getInvestAmt();
-        		
-        			if(cashLeft == 0.0) {
-            			if(totalCash >= limitOnCashMove) {
-            				bucket.get(bucketLength).setInvestAmt(limitOnCashMove);
-            				totalCash -= limitOnCashMove;
-            			}else {
-            				bucket.get(bucketLength).setInvestAmt(totalCash);
-            				totalCash = 0.0;
-            			}
-            		}    		
-        		});
-        		//above distributes cash only to buckets with 0 cash. Below allocate cash to buckets that have already some cash after
-        		//the first redistribution of cash
-        		if(totalCash > 0) {
-        			double cashToAlloc = totalCash / buckets.size();
-        			buckets.forEach( bucketNumber -> {
-        				ArrayList<Security>bucket = allocatedData.get(bucketNumber);
-        				int bucketLength = bucket.size() - 1;
-        				double currentCash = bucket.get(bucketLength).getInvestAmt();
-        				bucket.get(bucketLength).setInvestAmt(currentCash + cashToAlloc);
-        				totalCash -= cashToAlloc;
-        			});
-        		}
-        	}while(totalCash > 1.0);
-        	
-        	flagCashDistribution = false;
-        	buckets.forEach( bucketNumber -> {
-        		ArrayList<Security> bucket = allocatedData.get(bucketNumber);
-        		allocCashToExistingBonds(bucket);
-        	});
-        	
         	return summaryAlloc;
         }
     	
