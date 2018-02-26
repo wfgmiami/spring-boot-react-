@@ -140,7 +140,7 @@ debugger;
 		let arr = [];
 
 		Object.keys( allocSectorByState ).forEach( state => {
-		    let keep = false;
+		    // let keep = false;
 			// obj['portfolioSummary'] = state;
 			// arr.push(obj);
 			// obj = {};
@@ -151,12 +151,12 @@ debugger;
 				obj['rule'] = '<= 10%';
 				if(obj['dollarAllocated'] !== '0') {
 				    arr.push(obj);
-				    keep = true;
+				    // keep = true;
 				}
 				obj = {};
 			})
 
-			if(!keep) arr.splice(-1,1);
+			// if(!keep) arr.splice(-1,1);
 
 		})
 
