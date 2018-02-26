@@ -1396,7 +1396,7 @@ public class Allocation {
    
       	if(allocSectorInState.containsKey(state)){
       		if(!allocSectorInState.get(state).containsKey(sector)) {
-      			HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+      			HashMap<String, Double> sectorValue = allocSectorInState.get(state);
         		sectorValue.put(sector, 0.0);
         		allocSectorInState.put(state, sectorValue);
       		}
@@ -1588,7 +1588,7 @@ public class Allocation {
     							}
     							   							
     							double currentAllocSectorInState = allocSectorInState.get(state).get(sector);
-					    		HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+					    		HashMap<String, Double> sectorValue = allocSectorInState.get(state);
 					    		sectorValue.put(sector, currentAllocSectorInState + minIncrementToAllocate);
 					    		allocSectorInState.put(state, sectorValue);
     					     	
@@ -1685,7 +1685,7 @@ public class Allocation {
 					}
 					
 					double currentAllocSectorInState = allocSectorInState.get(state).get(sector);
-		    		HashMap<String, Double> sectorValue = new HashMap<String, Double>();
+		    		HashMap<String, Double> sectorValue = allocSectorInState.get(state);
 		    		sectorValue.put(sector, currentAllocSectorInState + minIncrementToAllocate);
 		    		allocSectorInState.put(state, sectorValue);
 		    		
